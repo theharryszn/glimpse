@@ -237,7 +237,7 @@ const ContentApp: React.FC = () => {
   }
 
   return (
-    <div className={isDark ? 'dark' : ''} style={{ pointerEvents: 'none', position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
+    <div className={`${isDark ? 'dark ' : ''}pointer-events-none absolute left-0 top-0 h-full w-full`}>
       <MagicHoldAnimation position={isHolding ? position : null} />
       <TacticalPopover 
         term={capturedTerm}
@@ -283,7 +283,7 @@ export default defineContentScript({
       const fontLink = document.createElement('link');
       fontLink.id = 'glimpse-fonts';
       fontLink.rel = 'stylesheet';
-      fontLink.href = 'https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Changa+One:ital@0;1&family=Inter:wght@400;500;600;700&display=swap';
+      fontLink.href = 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap';
       
       document.head.append(preconnect1, preconnect2, fontLink);
     }

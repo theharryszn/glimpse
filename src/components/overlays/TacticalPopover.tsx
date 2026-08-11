@@ -1,5 +1,4 @@
-import React, { useLayoutEffect, useRef, useState } from "react";
-
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 interface Props {
   term?: string;
@@ -56,6 +55,13 @@ export const TacticalPopover: React.FC<Props> = ({
     }
   }, [isVisible, position]);
 
+  useLayoutEffect(() => {
+    if (!popoverRef.current || !position) return;
+    const current = coords ?? { left: position.x, top: position.y };
+    popoverRef.current.style.setProperty("--popover-left", `${current.left}px`);
+    popoverRef.current.style.setProperty("--popover-top", `${current.top}px`);
+  }, [coords, position]);
+
   useEffect(() => {
     if (!isDragging) return;
 
@@ -99,86 +105,41 @@ export const TacticalPopover: React.FC<Props> = ({
   return (
     <div
       ref={popoverRef}
-      className="tactical-popover"
       role="status"
       aria-live="polite"
       aria-busy={isStreaming}
-      style={{
-        position: "absolute",
-        left: coords?.left ?? position.x,
-        top: coords?.top ?? position.y,
-        opacity: coords ? 1 : 0,
-        pointerEvents: "auto",
-      }}
+      className={`tactical-popover pointer-events-auto absolute left-[var(--popover-left)] top-[var(--popover-top)] ${coords ? "opacity-100" : "opacity-0"}`}
     >
       <div className="popover-content">
         <header
-          style={{
-            cursor: isDragging ? "grabbing" : "grab",
-            userSelect: "none",
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-          }}
+          className={`flex select-none items-center gap-2 ${isDragging ? "cursor-grabbing" : "cursor-grab"}`}
           onMouseDown={handleDragStart}
         >
-          <div
-            style={{
-              width: "3px",
-              height: "18px",
-              backgroundColor: "var(--accent-gold)",
-              borderRadius: "2px",
-            }}
-          />
           <h3
-            style={{
-              margin: 0,
-              fontSize: "16px",
-              fontWeight: 600,
-              fontFamily: "var(--font-heading)",
-              color: "var(--ink-primary)",
-            }}
+            className="m-0 line-clamp-3 text-ellipsis font-heading text-sm font-semibold text-ink"
           >
             {term || (isStreaming ? "Synthesizing..." : "Explanation")}
           </h3>
         </header>
-        <main style={{ marginTop: "12px", marginBottom: "16px" }}>
+        <main className="mb-4 mt-3">
           {error ? (
-            <p
-              className="text-error"
-              style={{ color: "var(--color-error, #ff4d4f)", margin: 0 }}
-            >
+            <p className="text-error m-0 text-[var(--color-error,#ff4d4f)]">
               {error.message}
             </p>
           ) : (
-            <div className="streaming-container" style={{ minHeight: "1.5em" }}>
+            <div className="streaming-container min-h-[1.5em]">
               {isStreaming && (
                 <span className="sr-only">Glimpse synthesis in progress.</span>
               )}
-              <p
-                className="text-serif"
-                style={{
-                  margin: 0,
-                  lineHeight: 1.5,
-                  color: "var(--ink-primary)",
-                }}
-              >
+              <p className="text-serif m-0 leading-normal text-ink">
                 {streamingText || (isStreaming ? "Thinking..." : "")}
               </p>
             </div>
           )}
         </main>
         {!error && !isStreaming && streamingText && (
-          <footer
-            className="popover-footer"
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginTop: "12px",
-            }}
-          >
-            <div style={{ display: "flex", gap: "8px" }}>
+          <footer className="popover-footer mt-3 flex items-center justify-between">
+            <div className="flex gap-2">
               <button className="btn-secondary" onClick={onExplainFurther}>
                 Explain Further
               </button>

@@ -14,7 +14,7 @@ export function ScrapbookRow({ item, onDelete, onAskFollowUp }: ScrapbookRowProp
   return (
     <div className="scrapbook-row text-serif">
       <div className="scrapbook-row-header">
-        <h3 className="text-serif" style={{ margin: 0, fontSize: '1.1rem' }}>{item.term}</h3>
+        <h3 className="text-serif m-0 text-[1.1rem]">{item.term}</h3>
         <span className="text-caption">{date}</span>
       </div>
       <p className="scrapbook-row-explanation">{item.explanation}</p>

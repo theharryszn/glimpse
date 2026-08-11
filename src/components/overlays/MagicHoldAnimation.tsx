@@ -5,30 +5,31 @@ interface Props {
 }
 
 export const MagicHoldAnimation: React.FC<Props> = ({ position }) => {
+  const containerRef = React.useRef<HTMLDivElement>(null);
+
+  React.useLayoutEffect(() => {
+    if (!containerRef.current || !position) return;
+    containerRef.current.style.setProperty('--hold-left', `${position.x}px`);
+    containerRef.current.style.setProperty('--hold-top', `${position.y}px`);
+  }, [position]);
+
   if (!position) return null;
+
+  const delayClasses = [
+    '[animation-delay:0s]',
+    '[animation-delay:0.4s]',
+    '[animation-delay:0.8s]',
+  ];
 
   return (
     <div
-      style={{
-        position: 'absolute',
-        left: position.x,
-        top: position.y,
-        width: 0,
-        height: 0,
-        pointerEvents: 'none',
-      }}
+      ref={containerRef}
+      className="pointer-events-none absolute left-[var(--hold-left)] top-[var(--hold-top)] h-0 w-0"
     >
       {[0, 1, 2].map((i) => (
         <div
           key={i}
-          className="pulse-ring"
-          style={{
-            width: '40px',
-            height: '40px',
-            marginLeft: '-20px',
-            marginTop: '-20px',
-            animationDelay: `${i * 0.4}s`,
-          }}
+          className={`pulse-ring -ml-5 -mt-5 h-10 w-10 ${delayClasses[i]}`}
         />
       ))}
     </div>

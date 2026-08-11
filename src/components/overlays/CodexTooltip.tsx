@@ -35,47 +35,25 @@ export const CodexTooltip: React.FC<Props> = ({ term, learnedAt, domainUrl, posi
     }
   }, [position]);
 
+  React.useLayoutEffect(() => {
+    if (!tooltipRef.current || !position) return;
+    const current = coords ?? { left: position.x, top: position.y };
+    tooltipRef.current.style.setProperty("--tooltip-left", `${current.left}px`);
+    tooltipRef.current.style.setProperty("--tooltip-top", `${current.top}px`);
+  }, [coords, position]);
+
   if (!position) return null;
 
   const date = new Date(learnedAt).toLocaleDateString();
   
   return (
-    <div 
+    <div
       ref={tooltipRef}
-      className="codex-tooltip"
-      style={{
-        position: 'fixed',
-        left: coords?.left ?? position.x,
-        top: coords?.top ?? position.y,
-        opacity: coords ? 1 : 0,
-        transform: coords ? 'translate(-50%, -100%)' : 'translate(-50%, -100%) scale(0.95)',
-        transition: 'opacity 0.2s ease, transform 0.2s ease',
-        padding: '8px 12px',
-        background: 'var(--surface-overlay)',
-        backdropFilter: 'blur(8px)',
-        border: '1px solid var(--border-hairline)',
-        borderTop: '2px solid var(--accent-gold)',
-        borderRadius: 'var(--radius-sm)',
-        boxShadow: 'var(--shadow-popover)',
-        zIndex: 1000000,
-        pointerEvents: 'none',
-        fontSize: '11px',
-        lineHeight: '1.4',
-        fontFamily: 'var(--font-sans)',
-        color: 'var(--ink-secondary)',
-        minWidth: '160px',
-        maxWidth: '240px'
-      }}
+      className={`codex-tooltip pointer-events-none fixed left-[var(--tooltip-left)] top-[var(--tooltip-top)] z-[1000000] min-w-40 max-w-60 -translate-x-1/2 -translate-y-full rounded-[var(--radius-sm)] border border-hairline border-t-2 border-t-accent bg-[var(--surface-overlay)] px-3 py-2 font-[var(--font-sans)] text-[11px] leading-[1.4] text-ink-muted shadow-[var(--shadow-popover)] backdrop-blur-sm transition-[opacity,transform] duration-200 ease-in-out ${coords ? "scale-100 opacity-100" : "scale-95 opacity-0"}`}
     >
-      <div style={{ fontWeight: 600, color: 'var(--ink-primary)', marginBottom: '2px', fontSize: '12px' }}>{term}</div>
+      <div className="mb-0.5 text-xs font-semibold text-ink">{term}</div>
       <div>Learned on {date}</div>
-      <div style={{ 
-        fontStyle: 'italic', 
-        overflow: 'hidden', 
-        textOverflow: 'ellipsis', 
-        whiteSpace: 'nowrap',
-        marginTop: '2px' 
-      }}>
+      <div className="mt-0.5 overflow-hidden text-ellipsis whitespace-nowrap italic">
         Source: {domainUrl}
       </div>
     </div>

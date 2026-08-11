@@ -2,17 +2,26 @@ import React from "react";
 import { ScrapbookList } from "../features/scrapbook/ScrapbookList";
 import { AiChat } from "../features/ai-chat/AiChat";
 import { BloomContext } from "../../shared/types/messaging";
+import type { UserScrapbook } from "../../shared/types/models";
+
+interface SimulationOptions {
+  scrapbookItems: UserScrapbook[];
+  onDelete: (id: number) => void;
+  chatStoragePrefix?: string;
+}
 
 interface Props {
   isOpen: boolean;
   bloomContext: BloomContext | null;
   onCloseChat: () => void;
+  simulation?: SimulationOptions;
 }
 
 export const FabPanel: React.FC<Props> = ({
   isOpen,
   bloomContext,
   onCloseChat,
+  simulation,
 }) => {
   const [isManualChatOpen, setIsManualChatOpen] = React.useState(false);
   const [internalContext, setInternalContext] =
@@ -40,74 +49,27 @@ export const FabPanel: React.FC<Props> = ({
   };
 
   return (
-    <div
-      className="fab-panel"
-      style={{
-        position: "fixed",
-        bottom: "96px",
-        right: "24px",
-        width: "400px",
-        height: "600px",
-        maxHeight: "calc(100vh - 120px)",
-        backgroundColor: "var(--surface-base, #ffffff)",
-        borderRadius: "12px",
-        boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
-        overflow: "hidden",
-        display: "flex",
-        flexDirection: "column",
-        zIndex: 2147483646,
-        fontFamily: "var(--font-sans)",
-        border: "1px solid var(--border-hairline, #e5e7eb)",
-        pointerEvents: "auto",
-      }}
-    >
+    <div className="fab-panel pointer-events-auto fixed bottom-24 right-6 z-[2147483646] flex h-[600px] max-h-[calc(100vh-120px)] w-[400px] flex-col overflow-hidden rounded-xl border border-hairline bg-surface font-[var(--font-sans)] shadow-[0_8px_32px_rgba(0,0,0,0.12)]">
       {showChat ? (
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            overflow: "hidden",
-          }}
-        >
+        <div className="flex flex-1 flex-col overflow-hidden">
           <AiChat
             initialContext={activeContext || undefined}
             onClose={handleCloseChat}
+            persistenceStorageKey={
+              simulation
+                ? `${simulation.chatStoragePrefix || "glimpse-design-lab-chat"}:${activeContext?.term || "new"}`
+                : undefined
+            }
           />
         </div>
       ) : (
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            overflow: "hidden",
-          }}
-        >
-          <header
-            style={{
-              padding: "16px",
-              borderBottom: "1px solid var(--border-hairline, #e5e7eb)",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
+        <div className="flex flex-1 flex-col overflow-hidden">
+          <header className="flex items-center justify-between border-b border-hairline p-4">
             <div>
-              <h1
-                style={{
-                  margin: 0,
-                  fontSize: "18px",
-                  fontWeight: 600,
-                  color: "var(--ink-primary)",
-                }}
-              >
+              <h1 className="m-0 text-lg font-semibold text-ink">
                 Glimpse Scrapbook
               </h1>
-              <p
-                className="text-caption"
-                style={{ margin: "4px 0 0 0", color: "var(--ink-secondary)" }}
-              >
+              <p className="text-caption mb-0 mt-1 text-ink-muted">
                 Your local research companion.
               </p>
             </div>
@@ -132,9 +94,11 @@ export const FabPanel: React.FC<Props> = ({
               </svg>
             </button>
           </header>
-          <main style={{ flex: 1, overflowY: "auto" }}>
+          <main className="flex-1 overflow-y-auto">
             <ScrapbookList
               onOpenChat={(context) => setInternalContext(context)}
+              simulatedItems={simulation?.scrapbookItems}
+              onSimulatedDelete={simulation?.onDelete}
             />
           </main>
         </div>

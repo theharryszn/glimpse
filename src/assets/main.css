@@ -15,6 +15,7 @@
   --color-hairline: var(--border-hairline);
   --font-body: var(--font-body);
   --font-heading: var(--font-heading);
+  --font-mono: var(--font-mono);
   --ease-glimpse: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -49,11 +50,12 @@
   --spacing-6: 24px;
 
   /* Typography Families */
-  --font-body: "Outfit", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
   --font-heading: "Inter", system-ui, sans-serif;
   --font-sans: "Inter", system-ui, sans-serif;
-  /* Keep serif alias for backward compat with .text-serif classes */
-  --font-serif: "Outfit", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  /* Backward-compatible alias while legacy class names are removed. */
+  --font-serif: "Inter", system-ui, sans-serif;
 }
 
 /* Dark Theme - Lunar Orbit */
@@ -99,6 +101,9 @@ h6 {
 .text-sans {
   font-family: var(--font-sans);
 }
+.text-mono {
+  font-family: var(--font-mono);
+}
 .text-caption {
   font-size: 12px;
   color: var(--ink-secondary);
@@ -114,6 +119,17 @@ h6 {
   100% {
     transform: scale(2.5);
     opacity: 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

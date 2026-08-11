@@ -12,15 +12,33 @@ interface Message {
 interface Props {
   initialContext?: BloomContext;
   onClose: () => void;
+  persistenceStorageKey?: string;
 }
 
-export const AiChat: React.FC<Props> = ({ initialContext, onClose }) => {
+export const AiChat: React.FC<Props> = ({
+  initialContext,
+  onClose,
+  persistenceStorageKey,
+}) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
-  const { streamingText, isStreaming, error, continueStream } = useAiStream();
+  const aiStream = useAiStream();
   const scrollRef = useRef<HTMLDivElement>(null);
+  const { streamingText, isStreaming, error } = aiStream;
 
   useEffect(() => {
+    if (persistenceStorageKey) {
+      try {
+        const storedMessages = localStorage.getItem(persistenceStorageKey);
+        if (storedMessages) {
+          setMessages(JSON.parse(storedMessages) as Message[]);
+          return;
+        }
+      } catch {
+        // Fall through to the same initial state used in production.
+      }
+    }
+
     if (initialContext) {
       setMessages([
         { role: "user", content: `Explain the term: ${initialContext.term}` },
@@ -34,7 +52,13 @@ export const AiChat: React.FC<Props> = ({ initialContext, onClose }) => {
         },
       ]);
     }
-  }, [initialContext]);
+  }, [initialContext, persistenceStorageKey]);
+
+  useEffect(() => {
+    if (persistenceStorageKey && messages.length > 0) {
+      localStorage.setItem(persistenceStorageKey, JSON.stringify(messages));
+    }
+  }, [messages, persistenceStorageKey]);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -62,7 +86,7 @@ export const AiChat: React.FC<Props> = ({ initialContext, onClose }) => {
       metadata = { ...pageMeta, surroundingText };
     }
 
-    continueStream(inputValue, newMessages, metadata);
+    aiStream.continueStream(inputValue, newMessages, metadata);
   };
 
   useEffect(() => {
@@ -87,7 +111,7 @@ export const AiChat: React.FC<Props> = ({ initialContext, onClose }) => {
         >
           ←
         </button>
-        <div className="header-info" style={{ marginLeft: "var(--spacing-2)" }}>
+        <div className="header-info ml-[var(--spacing-2)]">
           <span className="text-caption">
             {initialContext ? `Deep Dive: ${initialContext.term}` : "New Chat"}
           </span>
@@ -98,7 +122,7 @@ export const AiChat: React.FC<Props> = ({ initialContext, onClose }) => {
         {messages.map((msg, i) => (
           <div key={i} className={`message ${msg.role}`}>
             <div className="message-bubble">
-              <p className="text-serif" style={{ margin: 0 }}>
+              <p className="text-serif m-0">
                 {msg.content}
               </p>
             </div>
@@ -107,7 +131,7 @@ export const AiChat: React.FC<Props> = ({ initialContext, onClose }) => {
         {isStreaming && (
           <div className="message assistant">
             <div className="message-bubble">
-              <p className="text-serif" style={{ margin: 0 }}>
+              <p className="text-serif m-0">
                 {streamingText}
               </p>
             </div>
@@ -115,7 +139,7 @@ export const AiChat: React.FC<Props> = ({ initialContext, onClose }) => {
         )}
         {error && (
           <div className="error-message">
-            <p className="text-error" style={{ margin: 0 }}>
+            <p className="text-error m-0">
               {error.message}
             </p>
           </div>

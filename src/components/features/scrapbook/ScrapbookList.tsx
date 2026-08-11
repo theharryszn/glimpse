@@ -8,14 +8,17 @@ import './ScrapbookList.css';
 
 interface Props {
   onOpenChat?: (context: BloomContext) => void;
+  simulatedItems?: UserScrapbook[];
+  onSimulatedDelete?: (id: number) => void;
 }
 
-export function ScrapbookList({ onOpenChat }: Props = {}) {
+export function ScrapbookList({ onOpenChat, simulatedItems, onSimulatedDelete }: Props = {}) {
   const { deleteInteraction } = useScrapbook();
   
-  const items = useLiveQuery(
+  const storedItems = useLiveQuery(
     () => db.userScrapbook.orderBy('learnedAt').reverse().toArray()
   );
+  const items = simulatedItems ?? storedItems;
 
   const handleAskFollowUp = (item: UserScrapbook) => {
     if (onOpenChat) {
@@ -29,6 +32,10 @@ export function ScrapbookList({ onOpenChat }: Props = {}) {
   };
 
   const handleDelete = async (id: number) => {
+    if (simulatedItems) {
+      onSimulatedDelete?.(id);
+      return;
+    }
     const result = await deleteInteraction(id);
     if (!result.success) {
       alert(`Failed to delete: ${result.error}`);
