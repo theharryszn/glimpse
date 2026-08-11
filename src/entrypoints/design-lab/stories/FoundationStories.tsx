@@ -6,7 +6,6 @@ import {
 } from "@phosphor-icons/react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import { IconButton } from "@/components/ui/IconButton";
 import { StatusIndicator } from "@/components/ui/StatusIndicator";
 import { Surface } from "@/components/ui/Surface";
 import { TextField } from "@/components/ui/TextField";
@@ -20,25 +19,15 @@ export function ButtonStory() {
       <Button variant="ghost">Dismiss</Button>
       <Button variant="danger">Delete</Button>
       <Button disabled>Unavailable</Button>
-    </div>
-  );
-}
-
-export function IconButtonStory() {
-  return (
-    <div className="design-lab-primitive-row">
-      <IconButton aria-label="Generate">
+      <Button variant="icon" aria-label="Generate">
         <Sparkle size={16} aria-hidden />
-      </IconButton>
-      <IconButton aria-label="Continue">
+      </Button>
+      <Button variant="icon" aria-label="Continue">
         <ArrowRight size={16} aria-hidden />
-      </IconButton>
-      <IconButton aria-label="Close" size="sm">
+      </Button>
+      <Button variant="icon" aria-label="Close" size="sm">
         <X size={14} aria-hidden />
-      </IconButton>
-      <IconButton aria-label="Disabled" disabled>
-        <Sparkle size={16} aria-hidden />
-      </IconButton>
+      </Button>
     </div>
   );
 }
@@ -68,7 +57,7 @@ export function ToggleStory() {
   );
 }
 
-export function BadgeStory() {
+export function StatusStory() {
   return (
     <div className="design-lab-primitive-row">
       <Badge>Local</Badge>
@@ -76,13 +65,6 @@ export function BadgeStory() {
       <Badge tone="success">Ready</Badge>
       <Badge tone="warning">Preparing</Badge>
       <Badge tone="error">Unavailable</Badge>
-    </div>
-  );
-}
-
-export function StatusIndicatorStory() {
-  return (
-    <div className="design-lab-primitive-row design-lab-status-row">
       <StatusIndicator label="Idle" />
       <StatusIndicator label="Active" tone="success" />
       <StatusIndicator label="Preparing" tone="warning" />
@@ -91,21 +73,21 @@ export function StatusIndicatorStory() {
   );
 }
 
-export function SurfaceStory() {
+export function FoundationsStory() {
   return (
-    <div className="design-lab-surface-grid">
+    <div className="grid min-h-[340px] grid-cols-1 gap-3 p-10 md:grid-cols-3">
       <Surface className="p-4">Flat surface</Surface>
       <Surface elevation="raised" className="p-4">Raised surface</Surface>
       <Surface elevation="overlay" className="p-4">Overlay surface</Surface>
-    </div>
-  );
-}
-
-export function TextFieldStory() {
-  return (
-    <div className="design-lab-field-stack">
-      <TextField aria-label="Prompt" placeholder="Ask a follow-up..." />
-      <TextField aria-label="Disabled prompt" value="Streaming response" disabled readOnly />
+      <div className="flex flex-col justify-center gap-2 md:col-span-3">
+        <TextField aria-label="Prompt" placeholder="Ask a follow-up..." />
+        <TextField
+          aria-label="Disabled prompt"
+          value="Streaming response"
+          disabled
+          readOnly
+        />
+      </div>
     </div>
   );
 }

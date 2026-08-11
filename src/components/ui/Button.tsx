@@ -1,7 +1,7 @@
 import { forwardRef, type ButtonHTMLAttributes } from "react";
 import { cn } from "@/shared/utils/classnames";
 
-export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
+export type ButtonVariant = "primary" | "secondary" | "ghost" | "danger" | "icon";
 export type ButtonSize = "sm" | "md";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -18,6 +18,8 @@ const variants: Record<ButtonVariant, string> = {
     "border-transparent bg-transparent text-ink-muted hover:bg-surface-raised hover:text-ink focus-visible:ring-hairline",
   danger:
     "border-transparent bg-transparent text-[#b3261e] hover:bg-[#b3261e]/10 focus-visible:ring-[#b3261e]",
+  icon:
+    "shrink-0 rounded-full border-hairline bg-transparent p-0 text-ink-muted hover:border-accent hover:bg-surface-raised hover:text-accent-strong focus-visible:ring-accent",
 };
 
 const sizes: Record<ButtonSize, string> = {
@@ -37,7 +39,11 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(
           "inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-[var(--radius-md)] border font-medium tracking-[0.01em] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-45",
           variants[variant],
-          sizes[size],
+          variant === "icon"
+            ? size === "sm"
+              ? "size-7"
+              : "size-8"
+            : sizes[size],
           className,
         )}
         {...props}

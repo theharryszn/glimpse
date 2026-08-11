@@ -4,7 +4,7 @@ import { AiChat } from "../features/ai-chat/AiChat";
 import { BloomContext } from "../../shared/types/messaging";
 import type { UserScrapbook } from "../../shared/types/models";
 import { NotePencil } from "@phosphor-icons/react";
-import { IconButton } from "../ui/IconButton";
+import { Button } from "../ui/Button";
 
 interface SimulationOptions {
   scrapbookItems: UserScrapbook[];
@@ -75,13 +75,14 @@ export const FabPanel: React.FC<Props> = ({
                 Your local research companion.
               </p>
             </div>
-            <IconButton
+            <Button
+              variant="icon"
               onClick={() => setIsManualChatOpen(true)}
               title="New Chat"
               aria-label="New Chat"
             >
               <NotePencil size={16} weight="regular" aria-hidden />
-            </IconButton>
+            </Button>
           </header>
           <main className="flex-1 overflow-y-auto">
             <ScrapbookList

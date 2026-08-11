@@ -5,7 +5,7 @@ import { ChatComposer } from "@/components/features/ai/ChatComposer";
 import { ChatEmptyState } from "@/components/features/ai/ChatEmptyState";
 import { ChatMessage } from "@/components/features/ai/ChatMessage";
 import { StreamingResponse } from "@/components/features/ai/StreamingResponse";
-import { IconButton } from "@/components/ui/IconButton";
+import { Button } from "@/components/ui/Button";
 import { BloomContext } from "../../../shared/types/messaging";
 import { useAiStream } from "../../../hooks/use-ai-stream";
 import { extractPageMetadata } from "../../../shared/utils/metadata-utils";
@@ -112,12 +112,13 @@ export const AiChat: React.FC<Props> = ({
   return (
     <div className="ai-chat-container">
       <header className="chat-header">
-        <IconButton
+        <Button
+          variant="icon"
           onClick={onClose}
           aria-label="Back to Scrapbook"
         >
           <ArrowLeft size={16} aria-hidden />
-        </IconButton>
+        </Button>
         <div className="header-info ml-[var(--spacing-2)]">
           <span className="text-caption">
             {initialContext ? `Deep Dive: ${initialContext.term}` : "New Chat"}

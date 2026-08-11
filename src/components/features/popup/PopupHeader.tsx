@@ -1,6 +1,6 @@
 import { Moon, Sun } from "@phosphor-icons/react";
 import { Badge } from "@/components/ui/Badge";
-import { IconButton } from "@/components/ui/IconButton";
+import { Button } from "@/components/ui/Button";
 import { Toggle } from "@/components/ui/Toggle";
 
 interface PopupHeaderProps {
@@ -33,7 +33,8 @@ export function PopupHeader({
         </div>
 
         <div className="flex items-center gap-3">
-          <IconButton
+          <Button
+            variant="icon"
             size="sm"
             onClick={onToggleTheme}
             aria-label="Toggle theme"
@@ -43,7 +44,7 @@ export function PopupHeader({
             ) : (
               <Sun size={14} weight="regular" aria-hidden />
             )}
-          </IconButton>
+          </Button>
           <Toggle
             checked={enabled}
             onCheckedChange={onToggleEnabled}
