@@ -78,7 +78,7 @@ export function ScrapbookActions({
       <Button
         ref={triggerRef}
         variant="icon"
-        className="size-8 rounded-full p-0 !bg-transparent !text-ink-muted hover:!bg-surface hover:!text-ink"
+        className="pointer-events-none size-8 translate-x-1 rounded-full p-0 opacity-0 !border-transparent !bg-transparent !text-ink-muted transition-[color,opacity,transform] duration-150 hover:!bg-transparent hover:!text-ink group-hover:pointer-events-auto group-hover:translate-x-0 group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:translate-x-0 group-focus-within:opacity-100"
         onClick={() => setIsOpen((current) => !current)}
         disabled={disabled}
         aria-label="More conversation actions"
