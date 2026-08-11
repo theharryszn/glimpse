@@ -1,4 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
+import { ArrowLeft } from "@phosphor-icons/react";
+import { AiErrorState } from "@/components/features/ai/AiErrorState";
+import { ChatComposer } from "@/components/features/ai/ChatComposer";
+import { ChatMessage } from "@/components/features/ai/ChatMessage";
+import { StreamingResponse } from "@/components/features/ai/StreamingResponse";
+import { IconButton } from "@/components/ui/IconButton";
 import { BloomContext } from "../../../shared/types/messaging";
 import { useAiStream } from "../../../hooks/use-ai-stream";
 import { extractPageMetadata } from "../../../shared/utils/metadata-utils";
@@ -66,8 +72,7 @@ export const AiChat: React.FC<Props> = ({
     }
   }, [messages, streamingText]);
 
-  const handleSend = async (e?: React.FormEvent) => {
-    e?.preventDefault();
+  const handleSend = async () => {
     if (!inputValue.trim() || isStreaming) return;
 
     const userMessage: Message = { role: "user", content: inputValue };
@@ -104,13 +109,12 @@ export const AiChat: React.FC<Props> = ({
   return (
     <div className="ai-chat-container">
       <header className="chat-header">
-        <button
-          className="btn-icon"
+        <IconButton
           onClick={onClose}
           aria-label="Back to Scrapbook"
         >
-          ←
-        </button>
+          <ArrowLeft size={16} aria-hidden />
+        </IconButton>
         <div className="header-info ml-[var(--spacing-2)]">
           <span className="text-caption">
             {initialContext ? `Deep Dive: ${initialContext.term}` : "New Chat"}
@@ -120,45 +124,27 @@ export const AiChat: React.FC<Props> = ({
 
       <div className="chat-messages" ref={scrollRef}>
         {messages.map((msg, i) => (
-          <div key={i} className={`message ${msg.role}`}>
-            <div className="message-bubble">
-              <p className="text-serif m-0">
-                {msg.content}
-              </p>
-            </div>
-          </div>
+          <ChatMessage key={i} role={msg.role}>
+            {msg.content}
+          </ChatMessage>
         ))}
         {isStreaming && (
-          <div className="message assistant">
-            <div className="message-bubble">
-              <p className="text-serif m-0">
-                {streamingText}
-              </p>
-            </div>
-          </div>
+          <ChatMessage role="assistant">
+            <StreamingResponse text={streamingText} isStreaming />
+          </ChatMessage>
         )}
         {error && (
-          <div className="error-message">
-            <p className="text-error m-0">
-              {error.message}
-            </p>
-          </div>
+          <AiErrorState message={error.message} code={error.code} />
         )}
       </div>
 
-      <form className="chat-input-form" onSubmit={handleSend}>
-        <input
-          type="text"
-          placeholder="Ask a follow-up..."
-          value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
-          disabled={isStreaming}
-          autoFocus
-        />
-        <button type="submit" disabled={isStreaming || !inputValue.trim()}>
-          Send
-        </button>
-      </form>
+      <ChatComposer
+        value={inputValue}
+        onChange={setInputValue}
+        onSubmit={handleSend}
+        disabled={isStreaming}
+        autoFocus
+      />
     </div>
   );
 };

@@ -133,6 +133,19 @@ h6 {
   }
 }
 
+@keyframes thinkingDot {
+  0%,
+  60%,
+  100% {
+    opacity: 0.35;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
 .pulse-ring {
   position: absolute;
   border: 2px solid var(--glow-ring);

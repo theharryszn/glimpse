@@ -1,4 +1,7 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { AiErrorState } from "@/components/features/ai/AiErrorState";
+import { ResponseActions } from "@/components/features/ai/ResponseActions";
+import { StreamingResponse } from "@/components/features/ai/StreamingResponse";
 
 interface Props {
   term?: string;
@@ -123,33 +126,21 @@ export const TacticalPopover: React.FC<Props> = ({
         </header>
         <main className="mb-4 mt-3">
           {error ? (
-            <p className="text-error m-0 text-[var(--color-error,#ff4d4f)]">
-              {error.message}
-            </p>
+            <AiErrorState message={error.message} code={error.code} />
           ) : (
-            <div className="streaming-container min-h-[1.5em]">
-              {isStreaming && (
-                <span className="sr-only">Glimpse synthesis in progress.</span>
-              )}
-              <p className="text-serif m-0 leading-normal text-ink">
-                {streamingText || (isStreaming ? "Thinking..." : "")}
-              </p>
-            </div>
+            <StreamingResponse
+              text={streamingText}
+              isStreaming={isStreaming}
+            />
           )}
         </main>
         {!error && !isStreaming && streamingText && (
           <footer className="popover-footer mt-3 flex items-center justify-between">
-            <div className="flex gap-2">
-              <button className="btn-secondary" onClick={onExplainFurther}>
-                Explain Further
-              </button>
-              <button className="btn-primary" onClick={onAskFollowUp}>
-                Ask Follow-up
-              </button>
-              <button className="btn-ghost" onClick={onDismiss}>
-                Got it
-              </button>
-            </div>
+            <ResponseActions
+              onExplainFurther={onExplainFurther}
+              onAskFollowUp={onAskFollowUp}
+              onDismiss={onDismiss}
+            />
           </footer>
         )}
       </div>

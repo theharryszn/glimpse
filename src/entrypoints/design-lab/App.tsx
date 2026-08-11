@@ -1,6 +1,15 @@
 import { Moon, Sun } from "@phosphor-icons/react";
 import { ComponentSection } from "./components/ComponentSection";
 import { AiStatusCardStory } from "./stories/AiStatusCardStory";
+import {
+  AiErrorStateStory,
+  ChatComposerStory,
+  ChatMessageStory,
+  FollowUpSuggestionsStory,
+  ResponseActionsStory,
+  StreamingResponseStory,
+  ThinkingIndicatorStory,
+} from "./stories/AiComponentStories";
 import { ChatStory } from "./stories/ChatStory";
 import { FabButtonStory } from "./stories/FabButtonStory";
 import { FabPanelStory } from "./stories/FabPanelStory";
@@ -34,6 +43,13 @@ const catalog = [
   { id: "status-indicator", label: "Status indicator" },
   { id: "surface", label: "Surface" },
   { id: "text-field", label: "Text field" },
+  { id: "chat-message", label: "Chat message" },
+  { id: "chat-composer", label: "Chat composer" },
+  { id: "thinking-indicator", label: "Thinking indicator" },
+  { id: "streaming-response", label: "Streaming response" },
+  { id: "ai-error", label: "AI error" },
+  { id: "response-actions", label: "Response actions" },
+  { id: "follow-up-suggestions", label: "Follow-up suggestions" },
   { id: "popup-header", label: "Popup header" },
   { id: "ai-status", label: "AI status" },
   { id: "quick-start", label: "Quick start" },
@@ -171,8 +187,71 @@ export default function App() {
         </ComponentSection>
 
         <ComponentSection
-          id="popup-header"
+          id="chat-message"
           index="08"
+          title="Chat message"
+          description="User and assistant turns with one consistent conversational rhythm."
+        >
+          <ChatMessageStory />
+        </ComponentSection>
+
+        <ComponentSection
+          id="chat-composer"
+          index="09"
+          title="Chat composer"
+          description="Controlled follow-up input with submit and streaming-disabled behavior."
+        >
+          <ChatComposerStory />
+        </ComponentSection>
+
+        <ComponentSection
+          id="thinking-indicator"
+          index="10"
+          title="Thinking indicator"
+          description="A quiet local-model activity signal set in JetBrains Mono."
+        >
+          <ThinkingIndicatorStory />
+        </ComponentSection>
+
+        <ComponentSection
+          id="streaming-response"
+          index="11"
+          title="Streaming response"
+          description="The accessible live region used while Gemini Nano returns an answer."
+        >
+          <StreamingResponseStory />
+        </ComponentSection>
+
+        <ComponentSection
+          id="ai-error"
+          index="12"
+          title="AI error"
+          description="Actionable model failures with a readable message and technical code."
+        >
+          <AiErrorStateStory />
+        </ComponentSection>
+
+        <ComponentSection
+          id="response-actions"
+          index="13"
+          title="Response actions"
+          description="The shared continuation actions used beneath completed explanations."
+        >
+          <ResponseActionsStory />
+        </ComponentSection>
+
+        <ComponentSection
+          id="follow-up-suggestions"
+          index="14"
+          title="Follow-up suggestions"
+          description="Contextual prompts that help a reader continue without composing from scratch."
+        >
+          <FollowUpSuggestionsStory />
+        </ComponentSection>
+
+        <ComponentSection
+          id="popup-header"
+          index="15"
           title="Popup header"
           description="Extension identity, theme control, and the global enabled state."
         >
@@ -181,7 +260,7 @@ export default function App() {
 
         <ComponentSection
           id="ai-status"
-          index="09"
+          index="16"
           title="AI status"
           description="A compact, semantic readout for local-model availability and preparation states."
         >
@@ -190,7 +269,7 @@ export default function App() {
 
         <ComponentSection
           id="quick-start"
-          index="10"
+          index="17"
           title="Quick start"
           description="The three-step instruction block used in the extension popup."
         >
@@ -199,7 +278,7 @@ export default function App() {
 
         <ComponentSection
           id="popup-footer"
-          index="11"
+          index="18"
           title="Popup footer"
           description="Privacy reassurance and routes into setup and development tools."
         >
@@ -208,7 +287,7 @@ export default function App() {
 
         <ComponentSection
           id="system-health"
-          index="12"
+          index="19"
           title="System health"
           description="Local identity and Gemini Nano readiness with actionable unavailable states."
         >
@@ -217,7 +296,7 @@ export default function App() {
 
         <ComponentSection
           id="hold-tutorial"
-          index="13"
+          index="20"
           title="Hold tutorial"
           description="The production onboarding exercise with real selection-and-hold completion behavior."
         >
@@ -226,7 +305,7 @@ export default function App() {
 
         <ComponentSection
           id="magic-hold"
-          index="14"
+          index="21"
           title="Magic Hold"
           description="A deliberate hold gesture that confirms Glimpse is listening without interrupting selection."
         >
@@ -235,7 +314,7 @@ export default function App() {
 
         <ComponentSection
           id="explanation-popover"
-          index="15"
+          index="22"
           title="Explanation popover"
           description="The draggable streamed answer surface, connected to the production local-AI bridge."
         >
@@ -244,7 +323,7 @@ export default function App() {
 
         <ComponentSection
           id="learned-tooltip"
-          index="16"
+          index="23"
           title="Learned-term tooltip"
           description="Saved context revealed when a reader returns to a term they have already explored."
         >
@@ -253,7 +332,7 @@ export default function App() {
 
         <ComponentSection
           id="scrapbook-row"
-          index="17"
+          index="24"
           title="Scrapbook row"
           description="One saved concept with source, recency, deletion, and follow-up actions."
         >
@@ -262,7 +341,7 @@ export default function App() {
 
         <ComponentSection
           id="scrapbook-list"
-          index="18"
+          index="25"
           title="Scrapbook list"
           description="The collection state using the same rows and deletion behavior as production."
         >
@@ -271,7 +350,7 @@ export default function App() {
 
         <ComponentSection
           id="follow-up-chat"
-          index="19"
+          index="26"
           title="Follow-up chat"
           description="Persistent conversation history with responses streamed by the live local model."
           frameClassName="design-lab-narrow-frame"
@@ -281,7 +360,7 @@ export default function App() {
 
         <ComponentSection
           id="launcher"
-          index="20"
+          index="27"
           title="Launcher"
           description="The current draggable entry control, preserved here while shortcut-first access is developed."
         >
@@ -290,7 +369,7 @@ export default function App() {
 
         <ComponentSection
           id="scrapbook-panel"
-          index="21"
+          index="28"
           title="Scrapbook panel"
           description="The combined saved-concepts and follow-up-chat container used over a webpage."
         >
@@ -299,7 +378,7 @@ export default function App() {
 
         <ComponentSection
           id="full-flow"
-          index="22"
+          index="29"
           title="Full product flow"
           description="Select, hold, explain, continue, save, and revisit as one production-equivalent journey."
         >

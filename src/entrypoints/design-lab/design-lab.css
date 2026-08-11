@@ -244,6 +244,42 @@ body,
   padding: 40px;
 }
 
+.design-lab-message-stack,
+.design-lab-composer-frame,
+.design-lab-ai-inline-frame {
+  min-height: 340px;
+  padding: 40px;
+}
+
+.design-lab-message-stack {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+}
+
+.design-lab-composer-frame {
+  display: flex;
+  align-items: center;
+}
+
+.design-lab-composer-frame > form {
+  width: min(100%, 560px);
+  margin-inline: auto;
+  border: 1px solid var(--design-lab-border);
+  border-radius: 10px;
+}
+
+.design-lab-ai-inline-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.design-lab-ai-inline-frame > * {
+  width: min(100%, 560px);
+}
+
 .design-lab-primitive-row {
   display: flex;
   flex-wrap: wrap;
