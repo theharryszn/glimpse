@@ -5,6 +5,7 @@ export function ChatStory() {
     <div className="design-lab-chat-frame">
       <AiChat
         onClose={() => undefined}
+        autoFocus={false}
         persistenceStorageKey="glimpse-design-lab-standalone-live-chat"
       />
     </div>

@@ -10,9 +10,9 @@ interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
 const tones: Record<BadgeTone, string> = {
   neutral: "bg-surface-raised text-ink-muted",
   accent: "bg-accent-soft text-accent-strong",
-  success: "bg-[#34A853]/12 text-[#237a3b] dark:text-[#7bd890]",
-  warning: "bg-[#FBBC04]/15 text-[#8a6500] dark:text-[#ffd866]",
-  error: "bg-[#EA4335]/12 text-[#b3261e] dark:text-[#ff8a80]",
+  success: "bg-[#34A853]/12 text-[#17652f] dark:text-[#b7f0c5]",
+  warning: "bg-[#FBBC04]/15 text-[#6f5100] dark:text-[#ffe89a]",
+  error: "bg-[#EA4335]/12 text-[#941e18] dark:text-[#ffb4ad]",
 };
 
 export function Badge({ tone = "neutral", className, ...props }: BadgeProps) {

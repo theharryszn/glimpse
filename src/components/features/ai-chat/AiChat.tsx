@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { ArrowLeft } from "@phosphor-icons/react";
 import { AiErrorState } from "@/components/features/ai/AiErrorState";
 import { ChatComposer } from "@/components/features/ai/ChatComposer";
+import { ChatEmptyState } from "@/components/features/ai/ChatEmptyState";
 import { ChatMessage } from "@/components/features/ai/ChatMessage";
 import { StreamingResponse } from "@/components/features/ai/StreamingResponse";
 import { IconButton } from "@/components/ui/IconButton";
@@ -15,16 +16,20 @@ interface Message {
   content: string;
 }
 
+const legacyGreeting = "Hello! I am Glimpse. How can I help you today?";
+
 interface Props {
   initialContext?: BloomContext;
   onClose: () => void;
   persistenceStorageKey?: string;
+  autoFocus?: boolean;
 }
 
 export const AiChat: React.FC<Props> = ({
   initialContext,
   onClose,
   persistenceStorageKey,
+  autoFocus = true,
 }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
@@ -37,7 +42,12 @@ export const AiChat: React.FC<Props> = ({
       try {
         const storedMessages = localStorage.getItem(persistenceStorageKey);
         if (storedMessages) {
-          setMessages(JSON.parse(storedMessages) as Message[]);
+          const parsedMessages = JSON.parse(storedMessages) as Message[];
+          const isLegacyGreeting =
+            parsedMessages.length === 1 &&
+            parsedMessages[0]?.role === "assistant" &&
+            parsedMessages[0]?.content === legacyGreeting;
+          setMessages(isLegacyGreeting ? [] : parsedMessages);
           return;
         }
       } catch {
@@ -50,14 +60,7 @@ export const AiChat: React.FC<Props> = ({
         { role: "user", content: `Explain the term: ${initialContext.term}` },
         { role: "assistant", content: initialContext.explanation },
       ]);
-    } else {
-      setMessages([
-        {
-          role: "assistant",
-          content: "Hello! I am Glimpse. How can I help you today?",
-        },
-      ]);
-    }
+    } else setMessages([]);
   }, [initialContext, persistenceStorageKey]);
 
   useEffect(() => {
@@ -123,6 +126,9 @@ export const AiChat: React.FC<Props> = ({
       </header>
 
       <div className="chat-messages" ref={scrollRef}>
+        {messages.length === 0 && !isStreaming && !error ? (
+          <ChatEmptyState />
+        ) : null}
         {messages.map((msg, i) => (
           <ChatMessage key={i} role={msg.role}>
             {msg.content}
@@ -143,7 +149,7 @@ export const AiChat: React.FC<Props> = ({
         onChange={setInputValue}
         onSubmit={handleSend}
         disabled={isStreaming}
-        autoFocus
+        autoFocus={autoFocus}
       />
     </div>
   );

@@ -22,7 +22,7 @@ export function ChatMessage({ role, children, className }: ChatMessageProps) {
         className={cn(
           "rounded-[var(--radius-lg)] px-3 py-2 text-sm leading-[1.6]",
           role === "user"
-            ? "rounded-br-[var(--radius-sm)] bg-accent text-white"
+            ? "rounded-br-[var(--radius-sm)] bg-accent text-ink"
             : "rounded-bl-[var(--radius-sm)] border border-hairline bg-accent-soft text-ink",
         )}
       >

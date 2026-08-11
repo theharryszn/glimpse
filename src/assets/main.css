@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 /*
  * Tailwind v4 aliases for Glimpse's semantic design tokens.
  * Existing CSS remains the source of truth while the UI migrates incrementally.
@@ -185,7 +187,7 @@ h6 {
 /* Buttons */
 .btn-primary {
   background-color: var(--accent-gold);
-  color: #ffffff;
+  color: var(--ink-primary);
   border: none;
   font-family: var(--font-sans);
   font-size: 12px;
@@ -199,6 +201,7 @@ h6 {
 
 .btn-primary:hover {
   background-color: #4a4638;
+  color: #ffffff;
   box-shadow: 0 2px 8px rgba(99, 95, 75, 0.3);
 }
 

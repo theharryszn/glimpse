@@ -11,7 +11,7 @@ export function AiErrorState({ message, code }: AiErrorStateProps) {
       <WarningCircle size={16} className="mt-0.5 shrink-0" aria-hidden />
       <div>
         <p className="m-0 text-xs leading-[1.45]">{message}</p>
-        {code && <span className="mt-1 block font-mono text-[9px] opacity-70">{code}</span>}
+        {code && <span className="mt-1 block font-mono text-[9px]">{code}</span>}
       </div>
     </div>
   );

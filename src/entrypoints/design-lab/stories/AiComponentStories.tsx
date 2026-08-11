@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { AiErrorState } from "@/components/features/ai/AiErrorState";
 import { ChatComposer } from "@/components/features/ai/ChatComposer";
+import { ChatEmptyState } from "@/components/features/ai/ChatEmptyState";
 import { ChatMessage } from "@/components/features/ai/ChatMessage";
 import { FollowUpSuggestions } from "@/components/features/ai/FollowUpSuggestions";
 import { ResponseActions } from "@/components/features/ai/ResponseActions";
@@ -14,6 +15,14 @@ export function ChatMessageStory() {
       <ChatMessage role="assistant">
         I’ll use the selected passage as context.
       </ChatMessage>
+    </div>
+  );
+}
+
+export function ChatEmptyStateStory() {
+  return (
+    <div className="flex min-h-64 w-full max-w-md rounded-[var(--radius-lg)] border border-hairline bg-surface-raised">
+      <ChatEmptyState />
     </div>
   );
 }
