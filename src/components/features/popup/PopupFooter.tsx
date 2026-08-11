@@ -22,7 +22,7 @@ export function PopupFooter({
             variant="secondary"
             size="sm"
             onClick={onOpenDesignLab}
-            className="min-h-0 px-1.5 py-[3px] text-[10px]"
+            className="!h-7 px-2 text-[10px]"
           >
             Design Lab
           </Button>
@@ -31,7 +31,7 @@ export function PopupFooter({
           variant="ghost"
           size="sm"
           onClick={onOpenSetupGuide}
-          className="min-h-0 px-1 py-0.5 text-[11px] text-accent-strong"
+          className="!h-7 px-2 text-[11px] text-accent-strong"
         >
           Setup Guide
         </Button>

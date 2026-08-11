@@ -17,13 +17,7 @@ export function PopupHeader({
   onToggleTheme,
 }: PopupHeaderProps) {
   return (
-    <header
-      className={`border-b border-hairline px-5 pb-4 pt-5 ${
-        theme === "dark"
-          ? "bg-[linear-gradient(135deg,#1C1E22_0%,#15171A_100%)]"
-          : "bg-[linear-gradient(135deg,#F8F7F4_0%,#EDECEA_100%)]"
-      }`}
-    >
+    <header className="border-b border-hairline bg-surface px-5 pb-4 pt-5">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2.5">
           <span className="text-xl font-bold tracking-[-0.3px] text-accent-strong">
@@ -36,6 +30,7 @@ export function PopupHeader({
           <Button
             variant="icon"
             size="sm"
+            className="!border-transparent !bg-transparent !text-ink-muted hover:!bg-surface-hover hover:!text-ink focus-visible:ring-offset-surface"
             onClick={onToggleTheme}
             aria-label="Toggle theme"
           >

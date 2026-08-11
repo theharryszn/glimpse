@@ -31,20 +31,18 @@ export const TacticalPopover: React.FC<Props> = ({
     <DraggableSurface
       anchor={position}
       isVisible={isVisible}
-      role="status"
-      aria-live="polite"
+      role="dialog"
+      aria-label={term ? `Explanation for ${term}` : "Glimpse explanation"}
       aria-busy={isStreaming}
-      className="tactical-popover"
+      className="tactical-popover w-[min(340px,calc(100vw-20px))]"
     >
-      <div className="popover-content">
+      <div className="max-h-[min(520px,calc(100vh-32px))] overflow-y-auto overscroll-contain rounded-[var(--radius-lg)] border border-hairline bg-[var(--surface-overlay)] p-4 text-ink [box-shadow:var(--shadow-popover)] backdrop-blur-md">
         <header
           data-drag-handle
-          className="flex cursor-grab select-none items-center gap-2 active:cursor-grabbing"
+          className="mb-2 flex cursor-grab select-none items-center gap-2 active:cursor-grabbing"
         >
-          <h3
-            className="m-0 line-clamp-3 text-ellipsis font-heading text-sm font-semibold text-ink"
-          >
-            {term || (isStreaming ? "Synthesizing..." : "Explanation")}
+          <h3 className="m-0 line-clamp-3 text-pretty font-heading text-sm font-semibold text-ink [overflow-wrap:anywhere]">
+            {term || (isStreaming ? "Synthesizing…" : "Explanation")}
           </h3>
         </header>
         <main className="mb-4 mt-3">
@@ -58,7 +56,7 @@ export const TacticalPopover: React.FC<Props> = ({
           )}
         </main>
         {!error && !isStreaming && streamingText && (
-          <footer className="popover-footer mt-3 flex items-center justify-between">
+          <footer className="mt-3 flex items-center justify-end border-t border-hairline pt-2">
             <ResponseActions
               onExplainFurther={onExplainFurther}
               onAskFollowUp={onAskFollowUp}

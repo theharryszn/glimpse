@@ -171,34 +171,6 @@ h6 {
   }
 }
 
-/* Tactical Popover */
-.tactical-popover {
-  max-width: 340px;
-  min-width: 200px;
-}
-
-.popover-content {
-  background-color: var(--surface-overlay);
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--border-hairline);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-popover);
-  padding: var(--spacing-4);
-  color: var(--ink-primary);
-}
-
-.popover-content header {
-  margin-bottom: var(--spacing-2);
-}
-
-.popover-footer {
-  margin-top: var(--spacing-3);
-  display: flex;
-  justify-content: flex-end;
-  border-top: 1px solid var(--border-hairline);
-  padding-top: var(--spacing-2);
-}
-
 /* Accessibility Utilities */
 .sr-only {
   position: absolute;

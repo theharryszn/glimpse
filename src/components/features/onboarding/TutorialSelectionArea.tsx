@@ -13,8 +13,8 @@ export const TutorialSelectionArea = forwardRef<
     <div
       ref={ref}
       className={cn(
-        "cursor-text select-text rounded-[var(--radius-md)] border border-dashed border-accent px-6 py-7 text-center transition-colors duration-300",
-        complete ? "bg-accent-soft" : "bg-transparent",
+        "cursor-text select-text rounded-[var(--radius-lg)] border border-dashed border-accent/70 px-6 py-7 text-center transition-colors duration-200 motion-reduce:transition-none",
+        complete ? "bg-accent-soft" : "bg-surface-raised",
       )}
     >
       <p

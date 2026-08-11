@@ -28,7 +28,7 @@ export function CapabilityInstructions({
   };
 
   return (
-    <div className="mt-3 rounded-[var(--radius-md)] bg-[#b3261e]/[0.06] p-3 text-[#8f1d17]">
+    <div className="mt-3 rounded-[var(--radius-lg)] border border-red-500/20 bg-red-500/10 p-3 text-red-700 dark:text-red-300">
       <strong className="text-xs font-semibold">Local AI needs setup</strong>
       <p className="mb-2 mt-1 text-[11px] leading-relaxed">
         Use Chrome 127 or newer, then complete these browser settings.

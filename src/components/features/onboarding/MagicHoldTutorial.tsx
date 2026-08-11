@@ -43,8 +43,8 @@ export function MagicHoldTutorial({
 
   return (
     <section>
-      <h2 className="mb-4 text-lg">Interactive Tutorial</h2>
-      <p className="text-serif mb-5">
+      <h2 className="mb-4 text-lg font-semibold">Interactive tutorial</h2>
+      <p className="mb-5 leading-relaxed text-ink-muted">
         Try the <strong>Magic Hold</strong>. Highlight the sentence below and
         hold your mouse button down for 1.5 seconds.
       </p>

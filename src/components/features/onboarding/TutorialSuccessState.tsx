@@ -3,7 +3,7 @@ import { CheckCircle } from "@phosphor-icons/react";
 export function TutorialSuccessState() {
   return (
     <div
-      className="mt-5 flex items-start gap-2.5 rounded-[var(--radius-md)] bg-accent-soft p-3 animate-[fadeIn_0.35s_ease-in]"
+      className="mt-5 flex items-start gap-2.5 rounded-[var(--radius-lg)] bg-accent-soft p-3 animate-[fadeIn_0.35s_ease-in] motion-reduce:animate-none"
       role="status"
     >
       <CheckCircle

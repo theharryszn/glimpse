@@ -32,7 +32,7 @@ export function HealthStatusRow({
         : CircleNotch;
 
   return (
-    <div className="flex items-start gap-2.5 py-2">
+    <div className="flex items-start gap-2.5 py-2.5">
       <Icon
         size={16}
         weight="fill"

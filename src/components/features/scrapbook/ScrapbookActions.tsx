@@ -78,7 +78,7 @@ export function ScrapbookActions({
       <Button
         ref={triggerRef}
         variant="icon"
-        className="pointer-events-none size-8 translate-x-1 rounded-full p-0 opacity-0 !border-transparent !bg-transparent !text-ink-muted transition-[color,opacity,transform] duration-150 hover:!bg-transparent hover:!text-ink group-hover:pointer-events-auto group-hover:translate-x-0 group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:translate-x-0 group-focus-within:opacity-100"
+        className="pointer-events-none size-8 translate-x-1 rounded-full p-0 opacity-0 !border-transparent !bg-transparent !text-ink-muted transition-[color,opacity,transform] duration-150 hover:!bg-transparent hover:!text-ink focus-visible:ring-offset-surface group-hover:pointer-events-auto group-hover:translate-x-0 group-hover:opacity-100 group-focus-within:pointer-events-auto group-focus-within:translate-x-0 group-focus-within:opacity-100 motion-reduce:transition-none [@media(hover:none)]:pointer-events-auto [@media(hover:none)]:translate-x-0 [@media(hover:none)]:opacity-100"
         onClick={() => setIsOpen((current) => !current)}
         disabled={disabled}
         aria-label="More conversation actions"
@@ -100,12 +100,12 @@ export function ScrapbookActions({
           id={menuId}
           role="menu"
           onKeyDown={handleMenuKeyDown}
-          className="absolute right-0 top-10 z-30 w-36 rounded-[var(--radius-lg)] border border-hairline bg-surface p-1 [box-shadow:var(--shadow-popover)]"
+          className="absolute right-0 top-9 z-30 max-h-56 w-36 overflow-y-auto overscroll-contain rounded-[var(--radius-lg)] border border-hairline bg-[var(--surface-overlay)] p-1 [box-shadow:var(--shadow-popover)] backdrop-blur-md"
         >
           <button
             type="button"
             role="menuitem"
-            className="flex h-8 w-full cursor-pointer items-center gap-2 rounded-md border-0 bg-transparent px-2 text-left text-xs text-ink transition-colors hover:bg-surface-raised focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+            className="flex h-8 w-full cursor-pointer items-center gap-2 rounded-[var(--radius-sm)] border-0 bg-transparent px-2 text-left text-xs text-ink transition-colors duration-150 hover:bg-surface-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent motion-reduce:transition-none"
             onClick={() => runAction(onArchive)}
           >
             <Archive className="shrink-0" size={14} aria-hidden />
@@ -114,7 +114,7 @@ export function ScrapbookActions({
           <button
             type="button"
             role="menuitem"
-            className="flex h-8 w-full cursor-pointer items-center gap-2 rounded-md border-0 bg-transparent px-2 text-left text-xs text-red-500 transition-colors hover:bg-red-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40"
+            className="flex h-8 w-full cursor-pointer items-center gap-2 rounded-[var(--radius-sm)] border-0 bg-transparent px-2 text-left text-xs text-red-400 transition-colors duration-150 hover:bg-red-500/10 hover:text-red-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40 motion-reduce:transition-none"
             onClick={() => runAction(onDelete)}
           >
             <Trash className="shrink-0" size={14} aria-hidden />

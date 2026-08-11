@@ -49,9 +49,11 @@ export const CodexTooltip: React.FC<Props> = ({ term, learnedAt, domainUrl, posi
   return (
     <div
       ref={tooltipRef}
-      className={`codex-tooltip pointer-events-none fixed left-[var(--tooltip-left)] top-[var(--tooltip-top)] z-[1000000] min-w-40 max-w-60 -translate-x-1/2 -translate-y-full rounded-[var(--radius-sm)] border border-hairline border-t-2 border-t-accent bg-[var(--surface-overlay)] px-3 py-2 font-[var(--font-sans)] text-[11px] leading-[1.4] text-ink-muted shadow-[var(--shadow-popover)] backdrop-blur-sm transition-[opacity,transform] duration-200 ease-in-out ${coords ? "scale-100 opacity-100" : "scale-95 opacity-0"}`}
+      className={`codex-tooltip pointer-events-none fixed left-[var(--tooltip-left)] top-[var(--tooltip-top)] z-[1000000] min-w-40 max-w-60 -translate-x-1/2 -translate-y-full rounded-[var(--radius-md)] border border-hairline border-t-2 border-t-accent bg-[var(--surface-overlay)] px-3 py-2 font-[var(--font-sans)] text-[11px] leading-[1.4] text-ink-muted shadow-[var(--shadow-popover)] backdrop-blur-md transition-[opacity,transform] duration-150 ease-out motion-reduce:transition-none ${coords ? "scale-100 opacity-100" : "scale-95 opacity-0"}`}
     >
-      <div className="mb-0.5 text-xs font-semibold text-ink">{term}</div>
+      <div className="mb-0.5 line-clamp-2 text-pretty text-xs font-semibold text-ink [overflow-wrap:anywhere]">
+        {term}
+      </div>
       <div>Learned on {date}</div>
       <div className="mt-0.5 overflow-hidden text-ellipsis whitespace-nowrap italic">
         Source: {domainUrl}

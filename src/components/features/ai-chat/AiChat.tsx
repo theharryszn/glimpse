@@ -90,7 +90,7 @@ export const AiChat: React.FC<Props> = ({
       const fullText =
         document.body?.innerText || document.body?.textContent || "";
       const surroundingText =
-        fullText.length > 2000 ? fullText.substring(0, 2000) + "..." : fullText;
+        fullText.length > 2000 ? `${fullText.substring(0, 2000)}…` : fullText;
       metadata = { ...pageMeta, surroundingText };
     }
 
@@ -114,13 +114,14 @@ export const AiChat: React.FC<Props> = ({
       <header className="chat-header">
         <Button
           variant="icon"
+          className="!border-transparent !bg-transparent !text-ink-muted hover:!bg-surface-hover hover:!text-ink focus-visible:ring-offset-surface"
           onClick={onClose}
           aria-label="Back to Scrapbook"
         >
           <ArrowLeft size={16} aria-hidden />
         </Button>
-        <div className="header-info ml-[var(--spacing-2)]">
-          <span className="text-caption">
+        <div className="header-info ml-[var(--spacing-2)] min-w-0 flex-1">
+          <span className="text-caption block truncate">
             {initialContext?.title ?? "New Chat"}
           </span>
         </div>

@@ -16,7 +16,7 @@ const STORAGE_KEY_THEME = "glimpse_theme";
 
 function App() {
   const [enabled, setEnabled] = useState(true);
-  const [theme, setTheme] = useState<"light" | "dark">("light");
+  const [theme, setTheme] = useState<"light" | "dark">("dark");
   const [aiStatus, setAiStatus] = useState<AiCapabilityStatus | "checking">(
     "checking",
   );
@@ -27,13 +27,11 @@ function App() {
       // Load persisted state
       const stored = await browser.storage.local.get([STORAGE_KEY_ENABLED, STORAGE_KEY_THEME]);
       const isEnabled = stored[STORAGE_KEY_ENABLED] !== false; // default true
-      const storedTheme = stored[STORAGE_KEY_THEME] || "light";
+      const storedTheme = stored[STORAGE_KEY_THEME] || "dark";
       setEnabled(isEnabled);
       setTheme(storedTheme as "light" | "dark");
 
-      if (storedTheme === "dark") {
-        document.documentElement.classList.add("dark");
-      }
+      document.documentElement.classList.toggle("dark", storedTheme === "dark");
 
       // Check AI health
       const result = await checkAiCapabilities();
@@ -91,13 +89,13 @@ function App() {
   };
 
   const getStatusDot = () => {
-    if (!loaded) return { tone: "idle" as AiStatusTone, label: "Loading..." };
+    if (!loaded) return { tone: "idle" as AiStatusTone, label: "Loading…" };
     if (!enabled) return { tone: "idle" as AiStatusTone, label: "Disabled" };
     if (aiStatus === "available") return { tone: "success" as AiStatusTone, label: "Active" };
     if (aiStatus === "checking")
-      return { tone: "warning" as AiStatusTone, label: "Checking..." };
+      return { tone: "warning" as AiStatusTone, label: "Checking…" };
     if (aiStatus === "downloadable" || aiStatus === "downloading")
-      return { tone: "warning" as AiStatusTone, label: "Preparing..." };
+      return { tone: "warning" as AiStatusTone, label: "Preparing…" };
     return { tone: "error" as AiStatusTone, label: "Unavailable" };
   };
 

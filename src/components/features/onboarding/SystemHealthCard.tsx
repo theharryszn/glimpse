@@ -23,9 +23,9 @@ export function SystemHealthCard({
   }[aiStatus];
 
   return (
-    <section className="rounded-[var(--radius-md)] border border-hairline bg-surface-raised p-6">
+    <section className="rounded-[var(--radius-lg)] bg-surface-raised p-5">
       <div className="mb-3 flex items-baseline justify-between gap-4">
-        <h2 className="m-0 text-lg">System health</h2>
+        <h2 className="m-0 text-base font-semibold">System health</h2>
         <span className="font-mono text-[10px] uppercase tracking-[0.08em] text-ink-muted">
           {isSystemReady ? "Ready" : "Preparing"}
         </span>
@@ -34,7 +34,11 @@ export function SystemHealthCard({
       <div className="divide-y divide-hairline">
         <HealthStatusRow
           label="Local identity"
-          detail={identityReady ? "Created and stored on this device." : "Creating a secure local identity."}
+          detail={
+            identityReady
+              ? "Created and stored on this device."
+              : "Creating a secure local identity."
+          }
           tone={identityReady ? "ready" : "preparing"}
         />
         <HealthStatusRow

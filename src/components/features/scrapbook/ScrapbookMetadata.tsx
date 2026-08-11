@@ -15,7 +15,7 @@ export function ScrapbookMetadata({ learnedAt }: ScrapbookMetadataProps) {
 
   return (
     <time
-      className="shrink-0 text-xs text-ink-muted"
+      className="shrink-0 font-mono text-[10px] text-ink-muted"
       dateTime={learnedAt ? new Date(learnedAt).toISOString() : undefined}
       title={exactDate}
     >

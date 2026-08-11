@@ -52,7 +52,7 @@ export const FabPanel: React.FC<Props> = ({
   };
 
   return (
-    <div className="fab-panel pointer-events-auto fixed bottom-24 right-6 z-[2147483646] flex h-[600px] max-h-[calc(100vh-120px)] w-[400px] flex-col overflow-hidden rounded-xl border border-hairline bg-surface font-[var(--font-sans)] shadow-[0_8px_32px_rgba(0,0,0,0.12)]">
+    <div className="fab-panel pointer-events-auto fixed bottom-[max(24px,env(safe-area-inset-bottom))] right-[max(24px,env(safe-area-inset-right))] z-[2147483646] flex h-[600px] max-h-[calc(100vh-96px)] w-[min(400px,calc(100vw-48px))] flex-col overflow-hidden rounded-[calc(var(--radius-lg)+2px)] border border-hairline bg-[var(--surface-overlay)] font-[var(--font-sans)] [box-shadow:var(--shadow-popover)] backdrop-blur-md">
       {showChat ? (
         <div className="flex flex-1 flex-col overflow-hidden">
           <AiChat
@@ -69,7 +69,7 @@ export const FabPanel: React.FC<Props> = ({
         <div className="flex flex-1 flex-col overflow-hidden">
           <header className="flex items-center justify-between border-b border-hairline p-4">
             <div>
-              <h1 className="m-0 text-lg font-semibold text-ink">
+              <h1 className="m-0 text-base font-semibold text-ink">
                 Glimpse Scrapbook
               </h1>
               <p className="text-caption mb-0 mt-1 text-ink-muted">
@@ -78,6 +78,7 @@ export const FabPanel: React.FC<Props> = ({
             </div>
             <Button
               variant="icon"
+              className="!border-transparent !bg-transparent !text-ink-muted hover:!bg-surface-hover hover:!text-ink focus-visible:ring-offset-surface"
               onClick={() => setIsManualChatOpen(true)}
               title="New Chat"
               aria-label="New Chat"
@@ -85,7 +86,7 @@ export const FabPanel: React.FC<Props> = ({
               <NotePencil size={16} weight="regular" aria-hidden />
             </Button>
           </header>
-          <main className="flex-1 overflow-y-auto">
+          <main className="flex-1 overflow-y-auto overscroll-contain">
             <ScrapbookList
               onOpenChat={(context) => setInternalContext(context)}
               simulatedItems={simulation?.scrapbookItems}

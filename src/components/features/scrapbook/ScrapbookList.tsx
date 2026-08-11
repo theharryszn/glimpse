@@ -67,7 +67,9 @@ export function ScrapbookList({
     }
   };
 
-  if (items === undefined) return <div className="loading text-serif">Loading Scrapbook...</div>;
+  if (items === undefined) {
+    return <div className="loading font-body">Loading scrapbook…</div>;
+  }
 
   return (
     <div className="scrapbook-list">

@@ -29,31 +29,31 @@ function App() {
   }, []);
 
   return (
-    <div className="mx-auto my-20 max-w-[600px] rounded-[var(--radius-lg)] border border-hairline bg-surface p-10 shadow-[var(--shadow-popover)]">
-      <header className="mb-10 text-center">
-        <h1 className="mb-2 text-[32px] tracking-[-0.5px] text-accent-strong">
-          Glimpse
+    <main className="mx-auto min-h-screen max-w-[720px] px-6 py-16 sm:px-10 sm:py-20">
+      <header className="mb-10 border-b border-hairline pb-8">
+        <span className="mb-3 block font-mono text-[10px] font-medium uppercase tracking-[0.08em] text-accent-strong">
+          Local setup
+        </span>
+        <h1 className="mb-3 text-[32px] font-semibold tracking-[-0.7px] text-ink">
+          Set up Glimpse
         </h1>
-        <div className="mx-auto h-0.5 w-10 bg-accent" />
+        <p className="m-0 max-w-[560px] text-sm leading-relaxed text-ink-muted">
+          Check your local AI, then practice the highlight-and-hold gesture
+          once. Your reading context and conversations stay on this device.
+        </p>
       </header>
 
-      <p className="text-serif mb-8 text-base leading-[1.6]">
-        Your seamless learning partner is being initialized. Glimpse uses
-        Chrome&apos;s local AI (Gemini Nano) to provide explanations of anything
-        you read.
-      </p>
-
-      <div className="mt-10">
+      <section aria-label="System readiness">
         <SystemHealthCard
           aiStatus={aiStatus}
           identityReady={identityReady}
         />
-      </div>
+      </section>
 
-      <div className="mt-12">
+      <div className="mt-10 border-t border-hairline pt-10">
         <MagicHoldTutorial />
       </div>
-    </div>
+    </main>
   );
 }
 

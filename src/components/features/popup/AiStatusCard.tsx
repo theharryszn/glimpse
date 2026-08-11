@@ -10,7 +10,12 @@ interface AiStatusCardProps {
 
 export function AiStatusCard({ label, tone }: AiStatusCardProps) {
   return (
-    <Surface elevation="raised" className="px-3 py-2.5">
+    <Surface
+      elevation="raised"
+      className="px-3 py-2.5"
+      role="status"
+      aria-live="polite"
+    >
       <StatusIndicator label={`Local AI: ${label}`} tone={tone} />
     </Surface>
   );
