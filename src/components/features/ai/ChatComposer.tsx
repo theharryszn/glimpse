@@ -28,7 +28,7 @@ export function ChatComposer({
 
   return (
     <form
-      className="absolute bottom-4 left-4 right-4 z-10"
+      className="absolute bottom-4 left-4 right-4 z-10 before:pointer-events-none before:absolute before:-bottom-4 before:-left-4 before:-right-4 before:-top-12 before:-z-10 before:bg-[linear-gradient(to_bottom,transparent_0%,var(--surface-base)_70%)] before:content-['']"
       onSubmit={handleSubmit}
     >
       <div className="flex items-end gap-2 rounded-[var(--radius-lg)] border border-hairline bg-surface py-1.5 pl-3 pr-1.5 [box-shadow:var(--shadow-popover)] transition-[border-color,box-shadow] duration-150 focus-within:border-accent focus-within:ring-2 focus-within:ring-accent-soft">
