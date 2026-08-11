@@ -1,6 +1,6 @@
 import * as React from "react";
 import { FabPanel } from "@/components/overlays/FabPanel";
-import { MagicHoldAnimation } from "@/components/overlays/MagicHoldAnimation";
+import { HoldProgressIndicator } from "@/components/features/capture/HoldProgressIndicator";
 import { TacticalPopover } from "@/components/overlays/TacticalPopover";
 import { useAiStream } from "@/hooks/use-ai-stream";
 import { useMagicHold } from "@/hooks/use-magic-hold";
@@ -174,7 +174,7 @@ export function FullFlowStory() {
       <div className="design-lab-selectable-article">
         <ReadingSample />
       </div>
-      <MagicHoldAnimation position={isHolding ? localHoldPosition : null} />
+      <HoldProgressIndicator position={isHolding ? localHoldPosition : null} />
       <TacticalPopover
         term={popover.term}
         position={popover.open ? popover.position : null}

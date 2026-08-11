@@ -1,4 +1,4 @@
-import { MagicHoldAnimation } from "@/components/overlays/MagicHoldAnimation";
+import { HoldProgressIndicator } from "@/components/features/capture/HoldProgressIndicator";
 import { useStoredState } from "../shared/useStoredState";
 
 export function MagicHoldStory() {
@@ -21,7 +21,7 @@ export function MagicHoldStory() {
         <strong>Highlight and hold.</strong>
         <span>The animation stays anchored to the production pointer position.</span>
       </div>
-      <MagicHoldAnimation position={visible ? { x: 500, y: 180 } : null} />
+      <HoldProgressIndicator position={visible ? { x: 500, y: 180 } : null} />
     </div>
   );
 }

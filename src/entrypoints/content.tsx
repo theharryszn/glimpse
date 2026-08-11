@@ -4,7 +4,7 @@ import { useMagicHold } from '@/hooks/use-magic-hold';
 import { useAiStream } from '@/hooks/use-ai-stream';
 import { useCodexUnderliner } from '@/hooks/use-codex-underliner';
 import { useScrapbook } from '@/hooks/use-scrapbook';
-import { MagicHoldAnimation } from '@/components/overlays/MagicHoldAnimation';
+import { HoldProgressIndicator } from '@/components/features/capture/HoldProgressIndicator';
 import { TacticalPopover } from '@/components/overlays/TacticalPopover';
 import { CodexTooltip } from '@/components/overlays/CodexTooltip';
 import { FabButton } from '@/components/overlays/FabButton';
@@ -238,7 +238,7 @@ const ContentApp: React.FC = () => {
 
   return (
     <div className={`${isDark ? 'dark ' : ''}pointer-events-none absolute left-0 top-0 h-full w-full`}>
-      <MagicHoldAnimation position={isHolding ? position : null} />
+      <HoldProgressIndicator position={isHolding ? position : null} />
       <TacticalPopover 
         term={capturedTerm}
         position={position} 
