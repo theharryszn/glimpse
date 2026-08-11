@@ -4,8 +4,8 @@ import { defineConfig } from "wxt";
 export default defineConfig({
   srcDir: "src",
   modules: ["@wxt-dev/module-react"],
-  manifest: {
-    name: "Glimpse",
+  manifest: ({ mode }) => ({
+    name: mode === "development" ? "Glimpse Dev" : "Glimpse",
     description:
       "Privacy-first, local-AI Chrome extension for flow-state learning.",
     permissions: ["storage"],
@@ -23,7 +23,7 @@ export default defineConfig({
         "128": "icon/128.png"
       }
     }
-  },
+  }),
   vite: () => ({
     build: {
       minify: 'terser',

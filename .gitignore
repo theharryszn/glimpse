@@ -4,3 +4,4 @@ _bmad-output
 node_modules
 .wxt
 .output/
+yarn.lock

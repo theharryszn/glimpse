@@ -1,3 +1,23 @@
+@import "tailwindcss";
+
+/*
+ * Tailwind v4 aliases for Glimpse's semantic design tokens.
+ * Existing CSS remains the source of truth while the UI migrates incrementally.
+ */
+@theme inline {
+  --color-surface: var(--surface-base);
+  --color-surface-raised: var(--surface-raised);
+  --color-ink: var(--ink-primary);
+  --color-ink-muted: var(--ink-secondary);
+  --color-accent: var(--accent-gold);
+  --color-accent-strong: var(--accent-gold-hc);
+  --color-accent-soft: var(--accent-gold-soft);
+  --color-hairline: var(--border-hairline);
+  --font-body: var(--font-body);
+  --font-heading: var(--font-heading);
+  --ease-glimpse: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
 /* Google Fonts loaded via <link> tags in HTML pages and injected into host page by content script */
 
 :root {
