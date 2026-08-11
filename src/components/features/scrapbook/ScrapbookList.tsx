@@ -2,6 +2,7 @@ import { useLiveQuery } from 'dexie-react-hooks';
 import { db } from '../../../shared/db/dexie-db';
 import { useScrapbook } from '../../../hooks/use-scrapbook';
 import { ScrapbookRow } from './ScrapbookRow';
+import { ScrapbookEmptyState } from './ScrapbookEmptyState';
 import { UserScrapbook } from '../../../shared/types/models';
 import { BloomContext } from '../../../shared/types/messaging';
 import './ScrapbookList.css';
@@ -47,9 +48,7 @@ export function ScrapbookList({ onOpenChat, simulatedItems, onSimulatedDelete }:
   return (
     <div className="scrapbook-list">
       {items.length === 0 ? (
-        <div className="empty-state text-serif">
-          No research entries yet. Highlight some text and hold to start learning!
-        </div>
+        <ScrapbookEmptyState />
       ) : (
         items.map((item) => (
           <ScrapbookRow 

@@ -31,6 +31,13 @@ import { PopupHeaderStory } from "./stories/PopupHeaderStory";
 import { QuickStartStepsStory } from "./stories/QuickStartStepsStory";
 import { ScrapbookListStory } from "./stories/ScrapbookListStory";
 import { ScrapbookRowStory } from "./stories/ScrapbookRowStory";
+import {
+  ScrapbookActionsStory,
+  ScrapbookEmptyStateStory,
+  ScrapbookHeaderStory,
+  ScrapbookMetadataStory,
+  SourceLinkStory,
+} from "./stories/ScrapbookComponentStories";
 import { TooltipStory } from "./stories/TooltipStory";
 import { SystemHealthStory } from "./stories/SystemHealthStory";
 import { useStoredState } from "./shared/useStoredState";
@@ -59,6 +66,11 @@ const catalog = [
   { id: "magic-hold", label: "Magic Hold" },
   { id: "explanation-popover", label: "Explanation popover" },
   { id: "learned-tooltip", label: "Learned-term tooltip" },
+  { id: "scrapbook-metadata", label: "Scrapbook metadata" },
+  { id: "scrapbook-header", label: "Scrapbook header" },
+  { id: "source-link", label: "Source link" },
+  { id: "scrapbook-actions", label: "Scrapbook actions" },
+  { id: "scrapbook-empty", label: "Scrapbook empty state" },
   { id: "scrapbook-row", label: "Scrapbook row" },
   { id: "scrapbook-list", label: "Scrapbook list" },
   { id: "follow-up-chat", label: "Follow-up chat" },
@@ -331,8 +343,53 @@ export default function App() {
         </ComponentSection>
 
         <ComponentSection
-          id="scrapbook-row"
+          id="scrapbook-metadata"
           index="24"
+          title="Scrapbook metadata"
+          description="Compact learned-at context kept intentionally secondary to the saved concept."
+        >
+          <ScrapbookMetadataStory />
+        </ComponentSection>
+
+        <ComponentSection
+          id="scrapbook-header"
+          index="25"
+          title="Scrapbook header"
+          description="A saved term paired with its capture date in a resilient row header."
+        >
+          <ScrapbookHeaderStory />
+        </ComponentSection>
+
+        <ComponentSection
+          id="source-link"
+          index="26"
+          title="Source link"
+          description="A recognizable domain label that preserves the original reading context."
+        >
+          <SourceLinkStory />
+        </ComponentSection>
+
+        <ComponentSection
+          id="scrapbook-actions"
+          index="27"
+          title="Scrapbook actions"
+          description="Continue the conversation or remove an entry with clear action hierarchy."
+        >
+          <ScrapbookActionsStory />
+        </ComponentSection>
+
+        <ComponentSection
+          id="scrapbook-empty"
+          index="28"
+          title="Scrapbook empty state"
+          description="A useful first-use cue that explains how a reader creates the first entry."
+        >
+          <ScrapbookEmptyStateStory />
+        </ComponentSection>
+
+        <ComponentSection
+          id="scrapbook-row"
+          index="29"
           title="Scrapbook row"
           description="One saved concept with source, recency, deletion, and follow-up actions."
         >
@@ -341,7 +398,7 @@ export default function App() {
 
         <ComponentSection
           id="scrapbook-list"
-          index="25"
+          index="30"
           title="Scrapbook list"
           description="The collection state using the same rows and deletion behavior as production."
         >
@@ -350,7 +407,7 @@ export default function App() {
 
         <ComponentSection
           id="follow-up-chat"
-          index="26"
+          index="31"
           title="Follow-up chat"
           description="Persistent conversation history with responses streamed by the live local model."
           frameClassName="design-lab-narrow-frame"
@@ -360,7 +417,7 @@ export default function App() {
 
         <ComponentSection
           id="launcher"
-          index="27"
+          index="32"
           title="Launcher"
           description="The current draggable entry control, preserved here while shortcut-first access is developed."
         >
@@ -369,7 +426,7 @@ export default function App() {
 
         <ComponentSection
           id="scrapbook-panel"
-          index="28"
+          index="33"
           title="Scrapbook panel"
           description="The combined saved-concepts and follow-up-chat container used over a webpage."
         >
@@ -378,7 +435,7 @@ export default function App() {
 
         <ComponentSection
           id="full-flow"
-          index="29"
+          index="34"
           title="Full product flow"
           description="Select, hold, explain, continue, save, and revisit as one production-equivalent journey."
         >

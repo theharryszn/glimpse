@@ -1,4 +1,7 @@
 import { UserScrapbook } from '../../../shared/types/models';
+import { ScrapbookActions } from './ScrapbookActions';
+import { ScrapbookHeader } from './ScrapbookHeader';
+import { SourceLink } from './SourceLink';
 import './ScrapbookRow.css';
 
 interface ScrapbookRowProps {
@@ -8,35 +11,18 @@ interface ScrapbookRowProps {
 }
 
 export function ScrapbookRow({ item, onDelete, onAskFollowUp }: ScrapbookRowProps) {
-  const date = item.learnedAt ? new Date(item.learnedAt).toLocaleDateString() : 'Unknown';
-  const safeUrl = item.domainUrl.startsWith('http') ? item.domainUrl : `https://${item.domainUrl}`;
-
   return (
-    <div className="scrapbook-row text-serif">
-      <div className="scrapbook-row-header">
-        <h3 className="text-serif m-0 text-[1.1rem]">{item.term}</h3>
-        <span className="text-caption">{date}</span>
-      </div>
+    <article className="scrapbook-row">
+      <ScrapbookHeader term={item.term} learnedAt={item.learnedAt} />
       <p className="scrapbook-row-explanation">{item.explanation}</p>
-      <div className="scrapbook-row-footer">
-        <a href={safeUrl} target="_blank" rel="noreferrer" className="text-caption source-link">
-          Source
-        </a>
-        <div className="scrapbook-row-actions">
-          <button 
-            className="btn-ghost text-caption" 
-            onClick={() => onAskFollowUp(item)}
-          >
-            Ask Follow-up
-          </button>
-          <button 
-            className="btn-ghost delete text-caption" 
-            onClick={() => item.id !== undefined && onDelete(item.id)}
-          >
-            Delete
-          </button>
-        </div>
-      </div>
-    </div>
+      <footer className="scrapbook-row-footer">
+        <SourceLink url={item.domainUrl} />
+        <ScrapbookActions
+          onAskFollowUp={() => onAskFollowUp(item)}
+          onDelete={() => item.id !== undefined && onDelete(item.id)}
+          deleteDisabled={item.id === undefined}
+        />
+      </footer>
+    </article>
   );
 }
