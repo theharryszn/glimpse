@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { TutorialSelectionArea } from "./TutorialSelectionArea";
+import { TutorialSuccessState } from "./TutorialSuccessState";
 
 interface MagicHoldTutorialProps {
   initialComplete?: boolean;
@@ -47,32 +49,9 @@ export function MagicHoldTutorial({
         hold your mouse button down for 1.5 seconds.
       </p>
 
-      <div
-        ref={tutorialRef}
-        className={`cursor-text select-text rounded-[var(--radius-md)] border-2 border-dashed border-accent p-8 text-center transition-colors duration-500 ease-in-out ${
-          complete ? "bg-accent-soft" : "bg-transparent"
-        }`}
-      >
-        <p
-          className={`m-0 text-lg italic ${
-            complete ? "text-accent-strong" : "text-inherit"
-          }`}
-        >
-          &quot;The ephemeral nature of digital fragments requires a persistent
-          observer to forge lasting knowledge.&quot;
-        </p>
-      </div>
+      <TutorialSelectionArea ref={tutorialRef} complete={complete} />
 
-      {complete && (
-        <div className="mt-6 animate-[fadeIn_0.5s_ease-in] text-center">
-          <p className="text-lg font-bold text-[green]">
-            ✨ Onboarding Complete!
-          </p>
-          <p className="text-caption">
-            You&apos;re ready to start using Glimpse. Happy learning.
-          </p>
-        </div>
-      )}
+      {complete && <TutorialSuccessState />}
     </section>
   );
 }

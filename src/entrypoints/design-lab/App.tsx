@@ -25,6 +25,12 @@ import {
 import { FullFlowStory } from "./stories/FullFlowStory";
 import { MagicHoldStory } from "./stories/MagicHoldStory";
 import { MagicHoldTutorialStory } from "./stories/MagicHoldTutorialStory";
+import {
+  CapabilityInstructionsStory,
+  HealthStatusRowStory,
+  TutorialSelectionAreaStory,
+  TutorialSuccessStateStory,
+} from "./stories/OnboardingComponentStories";
 import { PopoverStory } from "./stories/PopoverStory";
 import { PopupFooterStory } from "./stories/PopupFooterStory";
 import { PopupHeaderStory } from "./stories/PopupHeaderStory";
@@ -61,7 +67,11 @@ const catalog = [
   { id: "ai-status", label: "AI status" },
   { id: "quick-start", label: "Quick start" },
   { id: "popup-footer", label: "Popup footer" },
+  { id: "health-status-row", label: "Health status row" },
+  { id: "capability-instructions", label: "Capability instructions" },
   { id: "system-health", label: "System health" },
+  { id: "tutorial-selection", label: "Tutorial selection" },
+  { id: "tutorial-success", label: "Tutorial success" },
   { id: "hold-tutorial", label: "Hold tutorial" },
   { id: "magic-hold", label: "Magic Hold" },
   { id: "explanation-popover", label: "Explanation popover" },
@@ -298,8 +308,26 @@ export default function App() {
         </ComponentSection>
 
         <ComponentSection
-          id="system-health"
+          id="health-status-row"
           index="19"
+          title="Health status row"
+          description="A consistent semantic readout for ready, preparing, and unavailable capabilities."
+        >
+          <HealthStatusRowStory />
+        </ComponentSection>
+
+        <ComponentSection
+          id="capability-instructions"
+          index="20"
+          title="Capability instructions"
+          description="Focused recovery steps shown only when the browser cannot run local AI."
+        >
+          <CapabilityInstructionsStory />
+        </ComponentSection>
+
+        <ComponentSection
+          id="system-health"
+          index="21"
           title="System health"
           description="Local identity and Gemini Nano readiness with actionable unavailable states."
         >
@@ -307,8 +335,26 @@ export default function App() {
         </ComponentSection>
 
         <ComponentSection
+          id="tutorial-selection"
+          index="22"
+          title="Tutorial selection"
+          description="The selectable reading sample used to teach Glimpse's core gesture."
+        >
+          <TutorialSelectionAreaStory />
+        </ComponentSection>
+
+        <ComponentSection
+          id="tutorial-success"
+          index="23"
+          title="Tutorial success"
+          description="A calm completion state that confirms the gesture and sets the next expectation."
+        >
+          <TutorialSuccessStateStory />
+        </ComponentSection>
+
+        <ComponentSection
           id="hold-tutorial"
-          index="20"
+          index="24"
           title="Hold tutorial"
           description="The production onboarding exercise with real selection-and-hold completion behavior."
         >
@@ -317,7 +363,7 @@ export default function App() {
 
         <ComponentSection
           id="magic-hold"
-          index="21"
+          index="25"
           title="Magic Hold"
           description="A deliberate hold gesture that confirms Glimpse is listening without interrupting selection."
         >
@@ -326,7 +372,7 @@ export default function App() {
 
         <ComponentSection
           id="explanation-popover"
-          index="22"
+          index="26"
           title="Explanation popover"
           description="The draggable streamed answer surface, connected to the production local-AI bridge."
         >
@@ -335,7 +381,7 @@ export default function App() {
 
         <ComponentSection
           id="learned-tooltip"
-          index="23"
+          index="27"
           title="Learned-term tooltip"
           description="Saved context revealed when a reader returns to a term they have already explored."
         >
@@ -344,7 +390,7 @@ export default function App() {
 
         <ComponentSection
           id="scrapbook-metadata"
-          index="24"
+          index="28"
           title="Scrapbook metadata"
           description="Compact learned-at context kept intentionally secondary to the saved concept."
         >
@@ -353,7 +399,7 @@ export default function App() {
 
         <ComponentSection
           id="scrapbook-header"
-          index="25"
+          index="29"
           title="Scrapbook header"
           description="A saved term paired with its capture date in a resilient row header."
         >
@@ -362,7 +408,7 @@ export default function App() {
 
         <ComponentSection
           id="source-link"
-          index="26"
+          index="30"
           title="Source link"
           description="A recognizable domain label that preserves the original reading context."
         >
@@ -371,7 +417,7 @@ export default function App() {
 
         <ComponentSection
           id="scrapbook-actions"
-          index="27"
+          index="31"
           title="Scrapbook actions"
           description="Continue the conversation or remove an entry with clear action hierarchy."
         >
@@ -380,7 +426,7 @@ export default function App() {
 
         <ComponentSection
           id="scrapbook-empty"
-          index="28"
+          index="32"
           title="Scrapbook empty state"
           description="A useful first-use cue that explains how a reader creates the first entry."
         >
@@ -389,7 +435,7 @@ export default function App() {
 
         <ComponentSection
           id="scrapbook-row"
-          index="29"
+          index="33"
           title="Scrapbook row"
           description="One saved concept with source, recency, deletion, and follow-up actions."
         >
@@ -398,7 +444,7 @@ export default function App() {
 
         <ComponentSection
           id="scrapbook-list"
-          index="30"
+          index="34"
           title="Scrapbook list"
           description="The collection state using the same rows and deletion behavior as production."
         >
@@ -407,7 +453,7 @@ export default function App() {
 
         <ComponentSection
           id="follow-up-chat"
-          index="31"
+          index="35"
           title="Follow-up chat"
           description="Persistent conversation history with responses streamed by the live local model."
           frameClassName="design-lab-narrow-frame"
@@ -417,7 +463,7 @@ export default function App() {
 
         <ComponentSection
           id="launcher"
-          index="32"
+          index="36"
           title="Launcher"
           description="The current draggable entry control, preserved here while shortcut-first access is developed."
         >
@@ -426,7 +472,7 @@ export default function App() {
 
         <ComponentSection
           id="scrapbook-panel"
-          index="33"
+          index="37"
           title="Scrapbook panel"
           description="The combined saved-concepts and follow-up-chat container used over a webpage."
         >
@@ -435,7 +481,7 @@ export default function App() {
 
         <ComponentSection
           id="full-flow"
-          index="34"
+          index="38"
           title="Full product flow"
           description="Select, hold, explain, continue, save, and revisit as one production-equivalent journey."
         >
