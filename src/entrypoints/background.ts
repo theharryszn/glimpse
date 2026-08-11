@@ -4,6 +4,11 @@ import {
   formatPrompt,
   formatElaboratePrompt,
 } from "../shared/utils/ai-prompt-utils";
+import {
+  formatChatTitlePrompt,
+  normalizeGeneratedChatTitle,
+} from "../shared/utils/chat-title-utils";
+import type { ChatTitleResult } from "../shared/types/messaging";
 
 export default defineBackground(() => {
   console.log("Glimpse: Background service worker initializing...", {
@@ -108,6 +113,45 @@ export default defineBackground(() => {
     }
   }
 
+  async function generateChatTitle(
+    contextText: string,
+    explanation: string,
+    metadata: Parameters<typeof formatChatTitlePrompt>[2],
+  ): Promise<ChatTitleResult> {
+    try {
+      if (typeof LanguageModel === "undefined") {
+        return { success: false, error: "Prompt API is not supported." };
+      }
+
+      const availability = await LanguageModel.availability();
+      if (availability === "unavailable") {
+        return { success: false, error: "The on-device model is unavailable." };
+      }
+
+      const session = await LanguageModel.create();
+      try {
+        const generatedTitle = await session.prompt(
+          formatChatTitlePrompt(contextText, explanation, metadata),
+        );
+        return {
+          success: true,
+          title: normalizeGeneratedChatTitle(
+            generatedTitle,
+            explanation,
+            contextText,
+          ),
+        };
+      } finally {
+        session.destroy();
+      }
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : "Title generation failed.",
+      };
+    }
+  }
+
   // Listen for connections from content scripts or sidepanel
   browser.runtime.onConnect.addListener((port) => {
     if (port.name !== "ai-bridge") return;
@@ -130,7 +174,10 @@ export default defineBackground(() => {
 
   // Handle messages from content scripts (non-port based)
   browser.runtime.onMessage.addListener((msg: AppMessage, sender) => {
-    if (msg.type === "OPEN_SIDE_PANEL") {
+    if (msg.type === "GENERATE_CHAT_TITLE") {
+      const { contextText, explanation, metadata } = msg.payload;
+      return generateChatTitle(contextText, explanation, metadata);
+    } else if (msg.type === "OPEN_SIDE_PANEL") {
       if (sender.tab?.id) {
         const sidePanel = (browser as any).sidePanel;
         if (sidePanel && sidePanel.open) {

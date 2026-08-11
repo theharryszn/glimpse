@@ -9,6 +9,7 @@ import { Button } from "../ui/Button";
 interface SimulationOptions {
   scrapbookItems: UserScrapbook[];
   onDelete: (id: number) => void;
+  onArchive?: (id: number) => void;
   chatStoragePrefix?: string;
 }
 
@@ -89,6 +90,7 @@ export const FabPanel: React.FC<Props> = ({
               onOpenChat={(context) => setInternalContext(context)}
               simulatedItems={simulation?.scrapbookItems}
               onSimulatedDelete={simulation?.onDelete}
+              onSimulatedArchive={simulation?.onArchive}
             />
           </main>
         </div>

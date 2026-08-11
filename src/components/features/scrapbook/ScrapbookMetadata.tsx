@@ -1,20 +1,23 @@
+import { formatRelativeDate } from "@/shared/utils/date-utils";
+
 interface ScrapbookMetadataProps {
   learnedAt?: number;
 }
 
 export function ScrapbookMetadata({ learnedAt }: ScrapbookMetadataProps) {
-  const date = learnedAt
-    ? new Date(learnedAt).toLocaleDateString(undefined, {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
+  const date = learnedAt ? formatRelativeDate(learnedAt) : "Unknown date";
+  const exactDate = learnedAt
+    ? new Date(learnedAt).toLocaleString(undefined, {
+        dateStyle: "medium",
+        timeStyle: "short",
       })
-    : "Unknown date";
+    : undefined;
 
   return (
     <time
-      className="font-mono text-[10px] uppercase tracking-[0.08em] text-ink-muted"
+      className="shrink-0 text-xs text-ink-muted"
       dateTime={learnedAt ? new Date(learnedAt).toISOString() : undefined}
+      title={exactDate}
     >
       {date}
     </time>

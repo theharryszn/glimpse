@@ -93,6 +93,27 @@ describe('useScrapbook', () => {
     expect(saved).toHaveLength(0);
   });
 
+  it('should archive an interaction without deleting it', async () => {
+    await db.open();
+    const id = await db.userScrapbook.add({
+      term: 'Test Term',
+      title: 'A generated conversation title',
+      explanation: 'Explanation',
+      domainUrl: 'example.com',
+      learnedAt: Date.now(),
+    });
+
+    const { result } = renderHook(() => useScrapbook());
+
+    let response: DbResult<void> | undefined;
+    await act(async () => {
+      response = await result.current.archiveInteraction(id);
+    });
+
+    expect(response?.success).toBe(true);
+    expect((await db.userScrapbook.get(id))?.archivedAt).toBeTypeOf('number');
+  });
+
   it('should return error if delete fails', async () => {
     await db.open();
     const originalDelete = db.userScrapbook.delete;

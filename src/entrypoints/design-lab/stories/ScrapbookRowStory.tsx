@@ -12,7 +12,7 @@ export function ScrapbookRowStory() {
   return (
     <div className="design-lab-row-frame">
       <div className="design-lab-frame-toolbar">
-        <span>Saved explanation</span>
+        <span>Conversation metadata and actions</span>
         <button onClick={() => setVisible(!visible)}>
           {visible ? "Delete" : "Restore"}
         </button>
@@ -21,7 +21,8 @@ export function ScrapbookRowStory() {
         <ScrapbookRow
           item={item}
           onDelete={() => setVisible(false)}
-          onAskFollowUp={() => undefined}
+          onArchive={() => setVisible(false)}
+          onOpen={() => undefined}
         />
       ) : (
         <div className="design-lab-empty-state">Entry deleted.</div>

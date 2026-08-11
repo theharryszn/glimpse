@@ -1,4 +1,4 @@
-import { ArrowSquareOut } from "@phosphor-icons/react";
+import { GlobeSimple } from "@phosphor-icons/react";
 
 interface SourceLinkProps {
   url: string;
@@ -19,10 +19,10 @@ export function SourceLink({ url }: SourceLinkProps) {
       href={safeUrl}
       target="_blank"
       rel="noreferrer"
-      className="inline-flex min-w-0 items-center gap-1 font-mono text-[10px] text-accent-strong no-underline hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+      className="inline-flex min-w-0 items-center gap-1 text-xs text-ink-muted no-underline transition-colors hover:text-ink focus-visible:rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
     >
+      <GlobeSimple size={12} aria-hidden />
       <span className="truncate">{label}</span>
-      <ArrowSquareOut size={12} aria-hidden />
       <span className="sr-only">Open source in a new tab</span>
     </a>
   );

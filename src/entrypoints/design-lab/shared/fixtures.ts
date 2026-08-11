@@ -17,6 +17,7 @@ export const initialScrapbookItems: UserScrapbook[] = [
   {
     id: 1,
     term: "Semantic compression",
+    title: "How meaning survives compression",
     explanation:
       "Preserving the essential meaning of information while representing it in a more compact form.",
     domainUrl: "https://example.com/reading/meaning",
@@ -25,6 +26,7 @@ export const initialScrapbookItems: UserScrapbook[] = [
   {
     id: 2,
     term: "Latent space",
+    title: "Mapping ideas in latent space",
     explanation:
       "A compressed mathematical space in which related ideas or features are positioned near one another.",
     domainUrl: "https://example.com/notes/latent-space",
@@ -33,6 +35,7 @@ export const initialScrapbookItems: UserScrapbook[] = [
   {
     id: 3,
     term: "Epistemic humility",
+    title: "Knowing where certainty ends",
     explanation:
       "An awareness of the limits of one’s knowledge and a willingness to revise beliefs when evidence changes.",
     domainUrl: "https://example.com/essays/knowing",

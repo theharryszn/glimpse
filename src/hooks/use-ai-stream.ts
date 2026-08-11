@@ -1,6 +1,11 @@
 import { useState, useCallback, useRef, useEffect } from "react";
-import { AppMessage, PageMetadata } from "../shared/types/messaging";
+import {
+  AppMessage,
+  type ChatTitleResult,
+  PageMetadata,
+} from "../shared/types/messaging";
 import { extractPageMetadata } from "../shared/utils/metadata-utils";
+import { getFallbackChatTitle } from "../shared/utils/chat-title-utils";
 import { useScrapbook } from "./use-scrapbook";
 
 export function useAiStream() {
@@ -13,6 +18,35 @@ export function useAiStream() {
     null,
   );
   const { saveInteraction } = useScrapbook();
+
+  const saveTitledInteraction = useCallback(
+    async (
+      contextText: string,
+      explanation: string,
+      metadata: PageMetadata,
+    ) => {
+      let title = getFallbackChatTitle(explanation, contextText);
+
+      try {
+        const result = (await browser.runtime.sendMessage({
+          type: "GENERATE_CHAT_TITLE",
+          payload: { contextText, explanation, metadata },
+        } satisfies AppMessage)) as ChatTitleResult;
+
+        if (result.success) title = result.title;
+      } catch (titleError) {
+        console.warn("Using fallback conversation title:", titleError);
+      }
+
+      return saveInteraction({
+        term: contextText,
+        title,
+        explanation,
+        domainUrl: metadata.url,
+      });
+    },
+    [saveInteraction],
+  );
 
   const cleanup = useCallback(() => {
     if (portRef.current) {
@@ -64,11 +98,11 @@ export function useAiStream() {
             return;
           }
 
-          saveInteraction({
-            term: contextText,
-            explanation: msg.payload.fullText,
-            domainUrl: url,
-          }).then((result) => {
+          saveTitledInteraction(
+            contextText,
+            msg.payload.fullText,
+            metadata,
+          ).then((result) => {
             if (!result.success) {
               console.error("Failed to auto-save interaction:", result.error);
             }
@@ -86,7 +120,7 @@ export function useAiStream() {
         portRef.current = null;
       });
     },
-    [isStreaming, cleanup, saveInteraction],
+    [isStreaming, cleanup, saveTitledInteraction],
   );
 
   const continueStream = useCallback(

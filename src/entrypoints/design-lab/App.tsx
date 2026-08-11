@@ -203,7 +203,7 @@ export default function App() {
           id="scrapbook-row"
           index="13"
           title="Scrapbook row"
-          description="One complete saved concept with metadata, source, deletion, and follow-up actions."
+          description="One conversation with its generated title, source, date, and management actions."
         >
           <ScrapbookRowStory />
         </ComponentSection>
@@ -212,7 +212,7 @@ export default function App() {
           id="scrapbook-list"
           index="14"
           title="Scrapbook list"
-          description="The saved-concept collection, including populated and empty states."
+          description="The active conversation index with relative dates and production interactions."
         >
           <ScrapbookListStory />
         </ComponentSection>

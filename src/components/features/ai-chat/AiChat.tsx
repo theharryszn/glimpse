@@ -121,7 +121,7 @@ export const AiChat: React.FC<Props> = ({
         </Button>
         <div className="header-info ml-[var(--spacing-2)]">
           <span className="text-caption">
-            {initialContext ? `Deep Dive: ${initialContext.term}` : "New Chat"}
+            {initialContext?.title ?? "New Chat"}
           </span>
         </div>
       </header>

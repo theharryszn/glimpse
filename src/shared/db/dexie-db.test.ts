@@ -26,6 +26,7 @@ describe('GlimpseDatabase', () => {
     expect(indexes).toContain('term');
     expect(indexes).toContain('domainUrl');
     expect(indexes).toContain('learnedAt');
+    expect(indexes).toContain('archivedAt');
     // explanation should not be indexed based on dev notes
     expect(indexes).not.toContain('explanation');
   });

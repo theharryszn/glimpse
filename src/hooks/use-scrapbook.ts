@@ -14,7 +14,13 @@ export function useScrapbook() {
       const existing = await db.userScrapbook.where('term').equalsIgnoreCase(interaction.term).first();
       
       if (existing && existing.id !== undefined) {
-        const updated = { ...existing, explanation: interaction.explanation, domainUrl: interaction.domainUrl, learnedAt: Date.now() };
+        const updated = {
+          ...existing,
+          ...interaction,
+          title: interaction.title || existing.title,
+          archivedAt: undefined,
+          learnedAt: Date.now(),
+        };
         await db.userScrapbook.put(updated);
         return { success: true, data: updated };
       }
@@ -53,6 +59,18 @@ export function useScrapbook() {
     }
   }, []);
 
+  const archiveInteraction = useCallback(async (id: number): Promise<DbResult<void>> => {
+    try {
+      await db.userScrapbook.update(id, { archivedAt: Date.now() });
+      return { success: true, data: undefined };
+    } catch (error) {
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown database error'
+      };
+    }
+  }, []);
+
   const getInteractionByTerm = useCallback(async (term: string): Promise<DbResult<UserScrapbook | undefined>> => {
     try {
       const entry = await db.userScrapbook.where('term').equalsIgnoreCase(term).first();
@@ -68,6 +86,7 @@ export function useScrapbook() {
   return {
     saveInteraction,
     deleteInteraction,
+    archiveInteraction,
     getInteractionByTerm
   };
 }

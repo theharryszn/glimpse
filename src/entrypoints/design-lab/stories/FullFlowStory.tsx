@@ -204,6 +204,12 @@ export function FullFlowStory() {
           scrapbookItems: items,
           onDelete: (id) =>
             setItems((current) => current.filter((item) => item.id !== id)),
+          onArchive: (id) =>
+            setItems((current) =>
+              current.map((item) =>
+                item.id === id ? { ...item, archivedAt: Date.now() } : item,
+              ),
+            ),
           chatStoragePrefix: "glimpse-design-lab-flow-live-chat",
         }}
       />
