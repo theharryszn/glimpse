@@ -24,16 +24,17 @@ export function Toggle({
       disabled={disabled}
       onClick={() => onCheckedChange(!checked)}
       className={cn(
-        "relative h-6 w-11 shrink-0 cursor-pointer rounded-full border-0 p-0 transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-45",
+        "relative h-6 w-11 shrink-0 cursor-pointer rounded-full border-0 p-0 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface motion-reduce:transition-none disabled:cursor-not-allowed disabled:opacity-45",
         checked ? "bg-[#34A853]" : "bg-ink-muted/35",
         className,
       )}
     >
       <span
         className={cn(
-          "absolute top-[3px] h-[18px] w-[18px] rounded-full bg-white shadow-[0_1px_3px_rgba(0,0,0,0.2)] transition-[left] duration-200",
-          checked ? "left-[23px]" : "left-[3px]",
+          "absolute left-[3px] top-[3px] size-[18px] rounded-full bg-white shadow-[0_1px_3px_rgba(0,0,0,0.2)] transition-transform duration-150 motion-reduce:transition-none",
+          checked ? "translate-x-5" : "translate-x-0",
         )}
+        aria-hidden
       />
     </button>
   );

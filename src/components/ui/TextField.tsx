@@ -9,7 +9,7 @@ export const TextField = forwardRef<
     <input
       ref={ref}
       className={cn(
-        "h-9 w-full rounded-[var(--radius-md)] border border-hairline bg-surface px-3 py-0 text-sm text-ink outline-none placeholder:text-ink-muted/70 focus:border-accent focus:ring-2 focus:ring-accent-soft disabled:cursor-not-allowed disabled:opacity-50",
+        "h-9 w-full rounded-[var(--radius-md)] border border-hairline bg-surface-raised px-3 py-0 text-sm text-ink outline-none transition-[border-color,box-shadow] duration-150 placeholder:text-ink-muted/70 focus:border-accent focus:ring-2 focus:ring-accent-soft focus-visible:outline-none motion-reduce:transition-none disabled:cursor-not-allowed disabled:opacity-50",
         className,
       )}
       {...props}

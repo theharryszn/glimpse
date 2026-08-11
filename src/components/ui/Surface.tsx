@@ -6,9 +6,10 @@ interface SurfaceProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const elevations = {
-  flat: "bg-surface",
-  raised: "bg-surface-raised",
-  overlay: "bg-[var(--surface-overlay)] shadow-[var(--shadow-popover)] backdrop-blur-sm",
+  flat: "border border-hairline bg-surface",
+  raised: "border border-transparent bg-surface-raised",
+  overlay:
+    "border border-hairline bg-[var(--surface-overlay)] shadow-[var(--shadow-popover)] backdrop-blur-md",
 };
 
 export function Surface({
@@ -19,7 +20,7 @@ export function Surface({
   return (
     <div
       className={cn(
-        "rounded-[var(--radius-lg)] border border-hairline text-ink",
+        "rounded-[var(--radius-lg)] text-ink",
         elevations[elevation],
         className,
       )}

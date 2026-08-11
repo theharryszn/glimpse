@@ -22,8 +22,11 @@ export function StatusIndicator({
 }: StatusIndicatorProps) {
   return (
     <span className={cn("inline-flex items-center gap-2", className)}>
-      <span className={cn("h-2 w-2 shrink-0 rounded-full", dots[tone])} />
-      <span className="text-[13px] font-medium">{label}</span>
+      <span
+        className={cn("size-1.5 shrink-0 rounded-full", dots[tone])}
+        aria-hidden
+      />
+      <span className="text-xs font-medium">{label}</span>
     </span>
   );
 }
