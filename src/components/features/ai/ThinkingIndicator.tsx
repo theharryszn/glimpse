@@ -1,7 +1,7 @@
 export function ThinkingIndicator() {
   return (
     <span
-      className="inline-flex items-center gap-1 font-mono text-[10px] text-ink-muted"
+      className="inline-flex items-center gap-1 font-mono text-sm leading-[1.6] text-ink-muted"
       role="status"
     >
       Thinking
