@@ -1,7 +1,9 @@
 .ai-chat-container {
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
+  overflow: hidden;
   background-color: var(--surface-base);
 }
 
@@ -16,7 +18,7 @@
 .chat-messages {
   flex: 1;
   overflow-y: auto;
-  padding: var(--spacing-4);
+  padding: var(--spacing-4) var(--spacing-4) 88px;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-3);

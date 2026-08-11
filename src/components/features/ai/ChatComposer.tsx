@@ -28,10 +28,10 @@ export function ChatComposer({
 
   return (
     <form
-      className="border-t border-hairline p-4"
+      className="absolute bottom-4 left-4 right-4 z-10"
       onSubmit={handleSubmit}
     >
-      <div className="flex items-end gap-2 rounded-[var(--radius-lg)] border border-hairline bg-surface py-1.5 pl-3 pr-1.5 transition-[border-color,box-shadow] duration-150 focus-within:border-accent focus-within:ring-2 focus-within:ring-accent-soft">
+      <div className="flex items-end gap-2 rounded-[var(--radius-lg)] border border-hairline bg-surface py-1.5 pl-3 pr-1.5 [box-shadow:var(--shadow-popover)] transition-[border-color,box-shadow] duration-150 focus-within:border-accent focus-within:ring-2 focus-within:ring-accent-soft">
         <TextField
           className="h-8 min-h-8 flex-1 !border-0 !bg-transparent px-0 py-0 !shadow-none !outline-none focus:!border-transparent focus:!outline-none focus:!ring-0 focus-visible:!outline-none focus-visible:!ring-0"
           placeholder={placeholder}
