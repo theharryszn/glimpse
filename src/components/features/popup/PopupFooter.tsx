@@ -1,3 +1,5 @@
+import { Button } from "@/components/ui/Button";
+
 interface PopupFooterProps {
   showDesignLab?: boolean;
   onOpenDesignLab?: () => void;
@@ -16,19 +18,23 @@ export function PopupFooter({
       </span>
       <div className="flex items-center gap-1.5">
         {showDesignLab && (
-          <button
+          <Button
+            variant="secondary"
+            size="sm"
             onClick={onOpenDesignLab}
-            className="cursor-pointer rounded border-0 bg-accent-soft px-1.5 py-[3px] text-[10px] font-semibold text-accent-strong"
+            className="min-h-0 px-1.5 py-[3px] text-[10px]"
           >
             Design Lab
-          </button>
+          </Button>
         )}
-        <button
+        <Button
+          variant="ghost"
+          size="sm"
           onClick={onOpenSetupGuide}
-          className="cursor-pointer rounded border-0 bg-transparent px-1 py-0.5 text-[11px] font-medium text-accent-strong hover:bg-accent-soft"
+          className="min-h-0 px-1 py-0.5 text-[11px] text-accent-strong"
         >
           Setup Guide
-        </button>
+        </Button>
       </div>
     </footer>
   );

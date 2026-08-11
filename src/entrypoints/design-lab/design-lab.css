@@ -94,6 +94,7 @@ body,
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  font-family: var(--font-mono);
 }
 
 .design-lab-sidebar nav a {
@@ -153,6 +154,7 @@ body,
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  font-family: var(--font-mono);
 }
 
 .design-lab-intro h1 {
@@ -209,6 +211,7 @@ body,
   color: var(--design-lab-muted);
   font-size: 9px;
   font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono);
 }
 
 .design-lab-section-header h2 {
@@ -232,6 +235,54 @@ body,
   border-radius: 12px;
   background: var(--surface-base);
   overflow: hidden;
+}
+
+.design-lab-primitive-row,
+.design-lab-surface-grid,
+.design-lab-field-stack {
+  min-height: 340px;
+  padding: 40px;
+}
+
+.design-lab-primitive-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.design-lab-status-row {
+  gap: 28px;
+}
+
+.design-lab-labeled-control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--ink-secondary);
+  font-size: 11px;
+}
+
+.design-lab-surface-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: center;
+  gap: 12px;
+}
+
+.design-lab-surface-grid > div {
+  min-height: 100px;
+  font-size: 11px;
+}
+
+.design-lab-field-stack {
+  display: flex;
+  width: min(100%, 460px);
+  margin-inline: auto;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
 }
 
 .design-lab-section-frame > .design-lab-page-preview {
@@ -546,6 +597,10 @@ body,
 
   .design-lab-article {
     width: calc(100% - 32px);
+  }
+
+  .design-lab-surface-grid {
+    grid-template-columns: 1fr;
   }
 
   .design-lab-flow-toolbar {

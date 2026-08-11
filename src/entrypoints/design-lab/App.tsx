@@ -4,6 +4,15 @@ import { AiStatusCardStory } from "./stories/AiStatusCardStory";
 import { ChatStory } from "./stories/ChatStory";
 import { FabButtonStory } from "./stories/FabButtonStory";
 import { FabPanelStory } from "./stories/FabPanelStory";
+import {
+  BadgeStory,
+  ButtonStory,
+  IconButtonStory,
+  StatusIndicatorStory,
+  SurfaceStory,
+  TextFieldStory,
+  ToggleStory,
+} from "./stories/FoundationStories";
 import { FullFlowStory } from "./stories/FullFlowStory";
 import { MagicHoldStory } from "./stories/MagicHoldStory";
 import { MagicHoldTutorialStory } from "./stories/MagicHoldTutorialStory";
@@ -18,6 +27,13 @@ import { SystemHealthStory } from "./stories/SystemHealthStory";
 import { useStoredState } from "./shared/useStoredState";
 
 const catalog = [
+  { id: "button", label: "Button" },
+  { id: "icon-button", label: "Icon button" },
+  { id: "toggle", label: "Toggle" },
+  { id: "badge", label: "Badge" },
+  { id: "status-indicator", label: "Status indicator" },
+  { id: "surface", label: "Surface" },
+  { id: "text-field", label: "Text field" },
   { id: "popup-header", label: "Popup header" },
   { id: "ai-status", label: "AI status" },
   { id: "quick-start", label: "Quick start" },
@@ -92,8 +108,71 @@ export default function App() {
         </header>
 
         <ComponentSection
-          id="popup-header"
+          id="button"
           index="01"
+          title="Button"
+          description="Shared actions with primary, secondary, quiet, destructive, and disabled states."
+        >
+          <ButtonStory />
+        </ComponentSection>
+
+        <ComponentSection
+          id="icon-button"
+          index="02"
+          title="Icon button"
+          description="Compact Phosphor actions with consistent sizing, focus, and disabled treatment."
+        >
+          <IconButtonStory />
+        </ComponentSection>
+
+        <ComponentSection
+          id="toggle"
+          index="03"
+          title="Toggle"
+          description="A controlled switch for global and local binary settings."
+        >
+          <ToggleStory />
+        </ComponentSection>
+
+        <ComponentSection
+          id="badge"
+          index="04"
+          title="Badge"
+          description="JetBrains Mono metadata labels for state, availability, and environment."
+        >
+          <BadgeStory />
+        </ComponentSection>
+
+        <ComponentSection
+          id="status-indicator"
+          index="05"
+          title="Status indicator"
+          description="Semantic availability states that combine a signal and readable label."
+        >
+          <StatusIndicatorStory />
+        </ComponentSection>
+
+        <ComponentSection
+          id="surface"
+          index="06"
+          title="Surface"
+          description="The shared flat, raised, and overlay containers behind Glimpse content."
+        >
+          <SurfaceStory />
+        </ComponentSection>
+
+        <ComponentSection
+          id="text-field"
+          index="07"
+          title="Text field"
+          description="Text entry with consistent focus, placeholder, and unavailable states."
+        >
+          <TextFieldStory />
+        </ComponentSection>
+
+        <ComponentSection
+          id="popup-header"
+          index="08"
           title="Popup header"
           description="Extension identity, theme control, and the global enabled state."
         >
@@ -102,7 +181,7 @@ export default function App() {
 
         <ComponentSection
           id="ai-status"
-          index="02"
+          index="09"
           title="AI status"
           description="A compact, semantic readout for local-model availability and preparation states."
         >
@@ -111,7 +190,7 @@ export default function App() {
 
         <ComponentSection
           id="quick-start"
-          index="03"
+          index="10"
           title="Quick start"
           description="The three-step instruction block used in the extension popup."
         >
@@ -120,7 +199,7 @@ export default function App() {
 
         <ComponentSection
           id="popup-footer"
-          index="04"
+          index="11"
           title="Popup footer"
           description="Privacy reassurance and routes into setup and development tools."
         >
@@ -129,7 +208,7 @@ export default function App() {
 
         <ComponentSection
           id="system-health"
-          index="05"
+          index="12"
           title="System health"
           description="Local identity and Gemini Nano readiness with actionable unavailable states."
         >
@@ -138,7 +217,7 @@ export default function App() {
 
         <ComponentSection
           id="hold-tutorial"
-          index="06"
+          index="13"
           title="Hold tutorial"
           description="The production onboarding exercise with real selection-and-hold completion behavior."
         >
@@ -147,7 +226,7 @@ export default function App() {
 
         <ComponentSection
           id="magic-hold"
-          index="07"
+          index="14"
           title="Magic Hold"
           description="A deliberate hold gesture that confirms Glimpse is listening without interrupting selection."
         >
@@ -156,7 +235,7 @@ export default function App() {
 
         <ComponentSection
           id="explanation-popover"
-          index="08"
+          index="15"
           title="Explanation popover"
           description="The draggable streamed answer surface, connected to the production local-AI bridge."
         >
@@ -165,7 +244,7 @@ export default function App() {
 
         <ComponentSection
           id="learned-tooltip"
-          index="09"
+          index="16"
           title="Learned-term tooltip"
           description="Saved context revealed when a reader returns to a term they have already explored."
         >
@@ -174,7 +253,7 @@ export default function App() {
 
         <ComponentSection
           id="scrapbook-row"
-          index="10"
+          index="17"
           title="Scrapbook row"
           description="One saved concept with source, recency, deletion, and follow-up actions."
         >
@@ -183,7 +262,7 @@ export default function App() {
 
         <ComponentSection
           id="scrapbook-list"
-          index="11"
+          index="18"
           title="Scrapbook list"
           description="The collection state using the same rows and deletion behavior as production."
         >
@@ -192,7 +271,7 @@ export default function App() {
 
         <ComponentSection
           id="follow-up-chat"
-          index="12"
+          index="19"
           title="Follow-up chat"
           description="Persistent conversation history with responses streamed by the live local model."
           frameClassName="design-lab-narrow-frame"
@@ -202,7 +281,7 @@ export default function App() {
 
         <ComponentSection
           id="launcher"
-          index="13"
+          index="20"
           title="Launcher"
           description="The current draggable entry control, preserved here while shortcut-first access is developed."
         >
@@ -211,7 +290,7 @@ export default function App() {
 
         <ComponentSection
           id="scrapbook-panel"
-          index="14"
+          index="21"
           title="Scrapbook panel"
           description="The combined saved-concepts and follow-up-chat container used over a webpage."
         >
@@ -220,7 +299,7 @@ export default function App() {
 
         <ComponentSection
           id="full-flow"
-          index="15"
+          index="22"
           title="Full product flow"
           description="Select, hold, explain, continue, save, and revisit as one production-equivalent journey."
         >

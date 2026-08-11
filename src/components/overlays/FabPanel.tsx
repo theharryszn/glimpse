@@ -3,6 +3,8 @@ import { ScrapbookList } from "../features/scrapbook/ScrapbookList";
 import { AiChat } from "../features/ai-chat/AiChat";
 import { BloomContext } from "../../shared/types/messaging";
 import type { UserScrapbook } from "../../shared/types/models";
+import { NotePencil } from "@phosphor-icons/react";
+import { IconButton } from "../ui/IconButton";
 
 interface SimulationOptions {
   scrapbookItems: UserScrapbook[];
@@ -73,26 +75,13 @@ export const FabPanel: React.FC<Props> = ({
                 Your local research companion.
               </p>
             </div>
-            <button
-              className="btn-icon"
+            <IconButton
               onClick={() => setIsManualChatOpen(true)}
               title="New Chat"
               aria-label="New Chat"
             >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M12 20h9" />
-                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-              </svg>
-            </button>
+              <NotePencil size={16} weight="regular" aria-hidden />
+            </IconButton>
           </header>
           <main className="flex-1 overflow-y-auto">
             <ScrapbookList

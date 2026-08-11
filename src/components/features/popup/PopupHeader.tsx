@@ -1,4 +1,7 @@
 import { Moon, Sun } from "@phosphor-icons/react";
+import { Badge } from "@/components/ui/Badge";
+import { IconButton } from "@/components/ui/IconButton";
+import { Toggle } from "@/components/ui/Toggle";
 
 interface PopupHeaderProps {
   enabled: boolean;
@@ -26,37 +29,26 @@ export function PopupHeader({
           <span className="text-xl font-bold tracking-[-0.3px] text-accent-strong">
             Glimpse
           </span>
-          <span className="rounded bg-accent-soft px-1.5 py-0.5 text-[10px] font-semibold uppercase tracking-[0.5px] text-accent-strong">
-            Beta
-          </span>
+          <Badge tone="accent">Beta</Badge>
         </div>
 
         <div className="flex items-center gap-3">
-          <button
+          <IconButton
+            size="sm"
             onClick={onToggleTheme}
             aria-label="Toggle theme"
-            className="flex h-7 w-7 cursor-pointer items-center justify-center rounded-full border border-hairline bg-surface text-ink-muted transition-all duration-200 ease-in-out"
           >
             {theme === "dark" ? (
               <Moon size={14} weight="regular" aria-hidden />
             ) : (
               <Sun size={14} weight="regular" aria-hidden />
             )}
-          </button>
-          <button
-            onClick={onToggleEnabled}
-            aria-label={enabled ? "Disable Glimpse" : "Enable Glimpse"}
-            aria-pressed={enabled}
-            className={`relative h-6 w-11 shrink-0 cursor-pointer rounded-xl border-0 p-0 transition-colors duration-200 ${
-              enabled ? "bg-[#34A853]" : "bg-ink-muted"
-            }`}
-          >
-            <span
-              className={`absolute top-[3px] h-[18px] w-[18px] rounded-full bg-white shadow-[0_1px_3px_rgba(0,0,0,0.2)] transition-[left] duration-200 ${
-                enabled ? "left-[23px]" : "left-[3px]"
-              }`}
-            />
-          </button>
+          </IconButton>
+          <Toggle
+            checked={enabled}
+            onCheckedChange={onToggleEnabled}
+            label={enabled ? "Disable Glimpse" : "Enable Glimpse"}
+          />
         </div>
       </div>
 
