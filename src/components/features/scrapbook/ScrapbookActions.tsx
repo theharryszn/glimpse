@@ -77,9 +77,8 @@ export function ScrapbookActions({
     <div ref={rootRef} className="relative">
       <Button
         ref={triggerRef}
-        variant="ghost"
-        size="sm"
-        className="size-8 rounded-full p-0 !text-ink-muted hover:!bg-surface hover:!text-ink"
+        variant="icon"
+        className="size-8 rounded-full p-0 !bg-transparent !text-ink-muted hover:!bg-surface hover:!text-ink"
         onClick={() => setIsOpen((current) => !current)}
         disabled={disabled}
         aria-label="More conversation actions"
@@ -87,7 +86,12 @@ export function ScrapbookActions({
         aria-expanded={isOpen}
         aria-controls={isOpen ? menuId : undefined}
       >
-        <DotsThreeVertical size={18} weight="bold" aria-hidden />
+        <DotsThreeVertical
+          className="shrink-0"
+          size={18}
+          weight="bold"
+          aria-hidden
+        />
       </Button>
 
       {isOpen ? (
@@ -104,7 +108,7 @@ export function ScrapbookActions({
             className="flex h-8 w-full cursor-pointer items-center gap-2 rounded-md border-0 bg-transparent px-2 text-left text-xs text-ink transition-colors hover:bg-surface-raised focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             onClick={() => runAction(onArchive)}
           >
-            <Archive size={14} aria-hidden />
+            <Archive className="shrink-0" size={14} aria-hidden />
             Archive
           </button>
           <button
@@ -113,7 +117,7 @@ export function ScrapbookActions({
             className="flex h-8 w-full cursor-pointer items-center gap-2 rounded-md border-0 bg-transparent px-2 text-left text-xs text-red-500 transition-colors hover:bg-red-500/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-500/40"
             onClick={() => runAction(onDelete)}
           >
-            <Trash size={14} aria-hidden />
+            <Trash className="shrink-0" size={14} aria-hidden />
             Delete
           </button>
         </div>

@@ -36,13 +36,12 @@ export function ScrapbookRow({
 
       <div className="flex shrink-0 items-center gap-1">
         <Button
-          variant="ghost"
-          size="sm"
+          variant="icon"
           className="size-8 translate-x-1 rounded-full p-0 opacity-0 !border-hairline !bg-surface !text-ink transition-[opacity,transform] duration-150 group-hover:translate-x-0 group-hover:opacity-100 group-focus-within:translate-x-0 group-focus-within:opacity-100 [@media(hover:none)]:translate-x-0 [@media(hover:none)]:opacity-100"
           onClick={() => onOpen(item)}
           aria-label={`Open conversation: ${title}`}
         >
-          <ArrowRight size={16} aria-hidden />
+          <ArrowRight className="shrink-0" size={16} aria-hidden />
         </Button>
         <ScrapbookActions
           onArchive={() => hasId && onArchive(item.id!)}
