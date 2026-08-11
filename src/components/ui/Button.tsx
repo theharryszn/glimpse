@@ -23,8 +23,8 @@ const variants: Record<ButtonVariant, string> = {
 };
 
 const sizes: Record<ButtonSize, string> = {
-  sm: "min-h-7 px-2.5 py-1 text-[11px]",
-  md: "min-h-8 px-3.5 py-1.5 text-xs",
+  sm: "h-8 px-3 py-0 text-[11px]",
+  md: "h-9 px-3.5 py-0 text-xs",
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -37,7 +37,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         type={type}
         className={cn(
-          "inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-[var(--radius-md)] border font-medium tracking-[0.01em] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-45",
+          "inline-flex shrink-0 cursor-pointer items-center justify-center gap-1.5 whitespace-nowrap rounded-[var(--radius-md)] border font-medium tracking-[0.01em] transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-45",
           variants[variant],
           variant === "icon"
             ? size === "sm"
