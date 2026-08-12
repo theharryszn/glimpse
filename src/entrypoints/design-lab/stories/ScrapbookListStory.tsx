@@ -12,7 +12,10 @@ export function ScrapbookListStory() {
   return (
     <div className="design-lab-scrapbook-frame">
       <div className="design-lab-frame-toolbar">
-        <span>{items.filter((item) => !item.archivedAt).length} entries</span>
+        <span>
+          {items.filter((item) => !item.archivedAt).length} active ·{" "}
+          {items.filter((item) => item.archivedAt).length} archived
+        </span>
         <button onClick={() => setItems(initialScrapbookItems)}>
           Reset data
         </button>
@@ -26,6 +29,13 @@ export function ScrapbookListStory() {
           setItems((current) =>
             current.map((item) =>
               item.id === id ? { ...item, archivedAt: Date.now() } : item,
+            ),
+          )
+        }
+        onSimulatedRestore={(id) =>
+          setItems((current) =>
+            current.map((item) =>
+              item.id === id ? { ...item, archivedAt: undefined } : item,
             ),
           )
         }

@@ -21,7 +21,7 @@ export function SourceLink({ url }: SourceLinkProps) {
       rel="noreferrer"
       className="inline-flex min-w-0 items-center gap-1 text-[11px] text-ink-muted no-underline transition-colors duration-150 hover:text-ink focus-visible:rounded-[var(--radius-sm)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent motion-reduce:transition-none"
     >
-      <GlobeSimple size={12} aria-hidden />
+      <GlobeSimple className="shrink-0" size={12} aria-hidden />
       <span className="truncate">{label}</span>
       <span className="sr-only">Open source in a new tab</span>
     </a>
