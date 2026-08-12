@@ -23,8 +23,6 @@
   --ease-glimpse: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Google Fonts loaded via <link> tags in HTML pages and injected into host page by content script */
-
 :root {
   /* Colors - Lunar Palette */
   --surface-base: #ffffff;

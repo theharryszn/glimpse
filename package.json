@@ -12,6 +12,8 @@
     "postinstall": "wxt prepare"
   },
   "dependencies": {
+    "@fontsource/inter": "^5.3.0",
+    "@fontsource/jetbrains-mono": "^5.3.0",
     "@phosphor-icons/react": "^2.1.10",
     "dexie": "^4.4.3",
     "dexie-react-hooks": "^4.4.0",
