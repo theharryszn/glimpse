@@ -9,6 +9,7 @@
 @theme inline {
   --color-surface: var(--surface-base);
   --color-surface-raised: var(--surface-raised);
+  --color-surface-inset: var(--surface-inset);
   --color-surface-hover: var(--surface-hover);
   --color-ink: var(--ink-primary);
   --color-ink-muted: var(--ink-secondary);
@@ -28,6 +29,7 @@
   /* Colors - Lunar Palette */
   --surface-base: #ffffff;
   --surface-raised: #f4f4f2;
+  --surface-inset: #ecece9;
   --surface-hover: #e9e9e6;
   --ink-primary: #202124;
   --ink-secondary: #5f6368;
@@ -68,18 +70,20 @@
 /* Dark Theme - Lunar Orbit */
 :root.dark,
 .dark {
-  --surface-base: #101216;
-  --surface-raised: #1a1c20;
-  --surface-hover: #24272c;
-  --ink-primary: #ffffff;
-  --ink-secondary: #9aa0a6;
-  --accent-gold: #d4af37;
-  --accent-gold-hc: #f0da79;
-  --accent-gold-soft: rgba(212, 175, 55, 0.15);
-  --border-hairline: rgba(255, 255, 255, 0.1);
-  --surface-overlay: rgba(21, 23, 28, 0.96);
+  --surface-base: #17191d;
+  --surface-raised: #222429;
+  --surface-inset: #1c1e22;
+  --surface-hover: #2c2f35;
+  --ink-primary: #f2f3f4;
+  --ink-secondary: #a5a8ad;
+  --accent-gold: #d2b45f;
+  --accent-gold-hc: #f0d87a;
+  --accent-gold-soft: rgba(210, 180, 95, 0.14);
+  --glow-ring: rgba(210, 180, 95, 0.32);
+  --border-hairline: rgba(255, 255, 255, 0.09);
+  --surface-overlay: rgba(29, 31, 36, 0.97);
   --shadow-popover:
-    0 12px 32px rgba(0, 0, 0, 0.42), 0 1px 1px rgba(255, 255, 255, 0.04);
+    0 12px 32px rgba(0, 0, 0, 0.38), 0 1px 1px rgba(255, 255, 255, 0.035);
 
   color-scheme: dark;
 }
@@ -92,6 +96,7 @@ body {
   font-size: 14px;
   color: var(--ink-primary);
   background-color: var(--surface-base);
+  line-height: 1.5;
 }
 
 h1,

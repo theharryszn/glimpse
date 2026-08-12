@@ -25,7 +25,7 @@ export function Toggle({
       onClick={() => onCheckedChange(!checked)}
       className={cn(
         "relative h-6 w-11 shrink-0 cursor-pointer rounded-full border-0 p-0 transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-surface motion-reduce:transition-none disabled:cursor-not-allowed disabled:opacity-45",
-        checked ? "bg-[#34A853]" : "bg-ink-muted/35",
+        checked ? "bg-accent" : "bg-ink-muted/35",
         className,
       )}
     >

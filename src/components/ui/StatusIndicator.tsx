@@ -9,10 +9,10 @@ interface StatusIndicatorProps {
 }
 
 const dots: Record<StatusTone, string> = {
-  idle: "bg-[#9AA0A6] shadow-[0_0_6px_rgba(154,160,166,0.25)]",
-  success: "bg-[#34A853] shadow-[0_0_6px_rgba(52,168,83,0.25)]",
-  warning: "bg-[#FBBC04] shadow-[0_0_6px_rgba(251,188,4,0.25)]",
-  error: "bg-[#EA4335] shadow-[0_0_6px_rgba(234,67,53,0.25)]",
+  idle: "bg-[#9aa0a6]",
+  success: "bg-[#6fca8c]",
+  warning: "bg-[#f0c85c]",
+  error: "bg-[#f07c73]",
 };
 
 export function StatusIndicator({
@@ -26,7 +26,7 @@ export function StatusIndicator({
         className={cn("size-1.5 shrink-0 rounded-full", dots[tone])}
         aria-hidden
       />
-      <span className="text-xs font-medium">{label}</span>
+      <span className="text-xs font-medium text-ink-muted">{label}</span>
     </span>
   );
 }
