@@ -59,7 +59,6 @@ body,
   border: 1px solid var(--accent-gold);
   border-radius: 50%;
   color: var(--accent-gold-hc);
-  font-size: 13px;
   font-weight: 700;
 }
 
@@ -70,13 +69,11 @@ body,
 }
 
 .design-lab-brand strong {
-  font-size: 13px;
   font-weight: 650;
 }
 
 .design-lab-brand small {
   color: var(--design-lab-muted);
-  font-size: 10px;
 }
 
 .design-lab-sidebar nav {
@@ -90,7 +87,7 @@ body,
 .design-lab-sidebar nav > span {
   margin: 0 0 8px 8px;
   color: var(--design-lab-muted);
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -101,7 +98,6 @@ body,
   padding: 8px;
   border-radius: 5px;
   color: var(--ink-secondary);
-  font-size: 11px;
   text-decoration: none;
   transition: color 150ms ease, background-color 150ms ease;
 }
@@ -170,7 +166,6 @@ body,
   max-width: 560px;
   margin: 0;
   color: var(--design-lab-muted);
-  font-size: 12px;
   line-height: 1.55;
 }
 
@@ -218,14 +213,12 @@ body,
   margin: 0;
   color: var(--ink-primary);
   font-family: Inter, system-ui, sans-serif;
-  font-size: 13px;
   font-weight: 600;
 }
 
 .design-lab-section-header p {
   margin: 0;
   color: var(--design-lab-muted);
-  font-size: 10px;
 }
 
 .design-lab-section-frame {
@@ -616,6 +609,23 @@ body,
     width: 100%;
     margin-left: 0;
     padding: 104px 14px 60px;
+  }
+
+  .design-lab-main > .design-lab-section:not(:target) {
+    display: none;
+  }
+
+  .design-lab-main > .design-lab-section:target {
+    display: block;
+    margin-bottom: 0;
+  }
+
+  .design-lab-main > .design-lab-section:last-child {
+    display: block;
+  }
+
+  .design-lab-main > .design-lab-section:target ~ .design-lab-section:last-child {
+    display: none;
   }
 
   .design-lab-intro {

@@ -1,8 +1,8 @@
 import { useState } from "react";
 import {
-  ArrowRight,
-  Sparkle,
-  X,
+  ArrowRightIcon,
+  ArrowUpIcon,
+  XIcon,
 } from "@phosphor-icons/react";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -20,13 +20,13 @@ export function ButtonStory() {
       <Button variant="danger">Delete</Button>
       <Button disabled>Unavailable</Button>
       <Button variant="icon" aria-label="Generate">
-        <Sparkle size={16} aria-hidden />
+        <ArrowUpIcon size={16} aria-hidden weight="bold" />
       </Button>
       <Button variant="icon" aria-label="Continue">
-        <ArrowRight size={16} aria-hidden />
+        <ArrowRightIcon size={16} aria-hidden weight="bold" />
       </Button>
-      <Button variant="icon" aria-label="Close" size="sm">
-        <X size={14} aria-hidden />
+      <Button variant="iconGhost" aria-label="Close" size="sm">
+        <XIcon size={14} aria-hidden weight="bold" />
       </Button>
     </div>
   );
@@ -77,10 +77,14 @@ export function FoundationsStory() {
   return (
     <div className="grid min-h-[340px] grid-cols-1 gap-3 p-10 md:grid-cols-3">
       <Surface className="p-4">Flat surface</Surface>
-      <Surface elevation="raised" className="p-4">Raised surface</Surface>
-      <Surface elevation="overlay" className="p-4">Overlay surface</Surface>
+      <Surface elevation="raised" className="p-4">
+        Raised surface
+      </Surface>
+      <Surface elevation="overlay" className="p-4">
+        Overlay surface
+      </Surface>
       <div className="flex flex-col justify-center gap-2 md:col-span-3">
-        <TextField aria-label="Prompt" placeholder="Ask a follow-up..." />
+        <TextField aria-label="Prompt" placeholder="Ask a follow-up…" />
         <TextField
           aria-label="Disabled prompt"
           value="Streaming response"

@@ -14,8 +14,8 @@ export function KeyboardShortcut({
   return (
     <span
       className={cn("inline-flex items-center gap-1", className)}
-      aria-label={label}
     >
+      <span className="sr-only">{label}</span>
       {keys.map((key) => (
         <kbd
           key={key}

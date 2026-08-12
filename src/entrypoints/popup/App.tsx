@@ -1,137 +1,126 @@
-import { useState, useEffect } from "react";
-import {
-  AiStatusCard,
-  type AiStatusTone,
-} from "@/components/features/popup/AiStatusCard";
+import { useEffect, useState } from "react";
+import { AiStatusCard } from "@/components/features/popup/AiStatusCard";
 import { PopupFooter } from "@/components/features/popup/PopupFooter";
 import { PopupHeader } from "@/components/features/popup/PopupHeader";
 import { QuickStartSteps } from "@/components/features/popup/QuickStartSteps";
 import {
   checkAiCapabilities,
-  AiCapabilityStatus,
+  type AiCapabilityStatus,
 } from "@/shared/utils/ai-health-service";
 
 const STORAGE_KEY_ENABLED = "glimpse_enabled";
-const STORAGE_KEY_THEME = "glimpse_theme";
 
 function App() {
   const [enabled, setEnabled] = useState(true);
-  const [theme, setTheme] = useState<"light" | "dark">("dark");
   const [aiStatus, setAiStatus] = useState<AiCapabilityStatus | "checking">(
     "checking",
   );
   const [loaded, setLoaded] = useState(false);
+  const [shortcutKeys, setShortcutKeys] = useState<string[]>([
+    "Alt / Option",
+    "Shift",
+    "G",
+  ]);
 
   useEffect(() => {
+    document.documentElement.classList.add("dark");
+
     const init = async () => {
-      // Load persisted state
-      const stored = await browser.storage.local.get([STORAGE_KEY_ENABLED, STORAGE_KEY_THEME]);
-      const isEnabled = stored[STORAGE_KEY_ENABLED] !== false; // default true
-      const storedTheme = stored[STORAGE_KEY_THEME] || "dark";
-      setEnabled(isEnabled);
-      setTheme(storedTheme as "light" | "dark");
-
-      document.documentElement.classList.toggle("dark", storedTheme === "dark");
-
-      // Check AI health
-      const result = await checkAiCapabilities();
-      if (result.success) {
-        setAiStatus(result.data.available);
-      } else {
-        setAiStatus("unavailable");
+      try {
+        const stored = await browser.storage.local.get(STORAGE_KEY_ENABLED);
+        setEnabled(stored[STORAGE_KEY_ENABLED] !== false);
+      } catch {
+        setEnabled(true);
+      } finally {
+        setLoaded(true);
       }
 
-      setLoaded(true);
+      const result = await checkAiCapabilities();
+      setAiStatus(result.success ? result.data.available : "unavailable");
+
+      try {
+        const commands = await browser.commands.getAll();
+        const scrapbookCommand = commands.find(
+          (command) => command.name === "toggle-scrapbook",
+        );
+        setShortcutKeys(
+          scrapbookCommand?.shortcut
+            ? scrapbookCommand.shortcut.split("+").map((key) =>
+                key === "Alt" ? "Alt / Option" : key,
+              )
+            : [],
+        );
+      } catch {
+        setShortcutKeys([]);
+      }
     };
-    init();
+
+    void init();
   }, []);
 
   const handleToggle = async () => {
+    if (!loaded) return;
     const newState = !enabled;
     setEnabled(newState);
     await browser.storage.local.set({ [STORAGE_KEY_ENABLED]: newState });
-    // Notify all content scripts of the state change
-    const tabs = await browser.tabs.query({});
-    for (const tab of tabs) {
-      if (tab.id) {
-        browser.tabs
-          .sendMessage(tab.id, {
-            type: "GLIMPSE_TOGGLE",
-            payload: { enabled: newState },
-          })
-          .catch(() => {});
-      }
-    }
-  };
-
-  const handleThemeToggle = async () => {
-    const newTheme = theme === "light" ? "dark" : "light";
-    setTheme(newTheme);
-    await browser.storage.local.set({ [STORAGE_KEY_THEME]: newTheme });
-    
-    if (newTheme === "dark") {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
 
     const tabs = await browser.tabs.query({});
     for (const tab of tabs) {
-      if (tab.id) {
-        browser.tabs
-          .sendMessage(tab.id, {
-            type: "GLIMPSE_THEME",
-            payload: { theme: newTheme },
-          })
-          .catch(() => {});
-      }
+      if (!tab.id) continue;
+      void browser.tabs
+        .sendMessage(tab.id, {
+          type: "GLIMPSE_TOGGLE",
+          payload: { enabled: newState },
+        })
+        .catch(() => {});
     }
   };
 
-  const getStatusDot = () => {
-    if (!loaded) return { tone: "idle" as AiStatusTone, label: "Loading…" };
-    if (!enabled) return { tone: "idle" as AiStatusTone, label: "Disabled" };
-    if (aiStatus === "available") return { tone: "success" as AiStatusTone, label: "Active" };
-    if (aiStatus === "checking")
-      return { tone: "warning" as AiStatusTone, label: "Checking…" };
-    if (aiStatus === "downloadable" || aiStatus === "downloading")
-      return { tone: "warning" as AiStatusTone, label: "Preparing…" };
-    return { tone: "error" as AiStatusTone, label: "Unavailable" };
-  };
+  const openExtensionPage = (
+    path: "/design-lab.html" | "/welcome.html",
+  ) =>
+    browser.tabs.create({ url: browser.runtime.getURL(path) });
 
-  const status = getStatusDot();
+  const openScrapbook = async () => {
+    const [activeTab] = await browser.tabs.query({
+      active: true,
+      lastFocusedWindow: true,
+    });
+    if (!activeTab?.id) return;
+
+    await browser.tabs
+      .sendMessage(
+        activeTab.id,
+        { type: "GLIMPSE_TOGGLE_SCRAPBOOK" },
+        { frameId: 0 },
+      )
+      .catch(() => {});
+    window.close();
+  };
 
   return (
-    <div className="m-0 w-[300px] overflow-hidden bg-surface p-0 font-[var(--font-serif)] text-ink">
+    <div className="m-0 w-[320px] overflow-hidden bg-surface p-0 font-body text-ink">
       <PopupHeader
         enabled={enabled}
-        theme={theme}
+        controlsReady={loaded}
         onToggleEnabled={handleToggle}
-        onToggleTheme={handleThemeToggle}
       />
 
-      {/* Status Section */}
       <div className="px-5 py-4">
-        <AiStatusCard label={status.label} tone={status.tone} />
-
-        {/* Quick Tips */}
+        <AiStatusCard status={aiStatus} enabled={enabled} />
         <div className="mt-4">
-          <QuickStartSteps />
+          <QuickStartSteps
+            shortcutKeys={shortcutKeys}
+            onOpenScrapbook={enabled ? openScrapbook : undefined}
+          />
         </div>
       </div>
 
       <PopupFooter
+        setupNeeded={aiStatus !== "available"}
         showDesignLab={import.meta.env.COMMAND === "serve"}
-        onOpenDesignLab={() =>
-          browser.tabs.create({
-            url: browser.runtime.getURL("/design-lab.html"),
-          })
-        }
-        onOpenSetupGuide={() =>
-          browser.tabs.create({
-            url: browser.runtime.getURL("/welcome.html"),
-          })
-        }
+        onOpenDesignLab={() => openExtensionPage("/design-lab.html")}
+        onOpenSetupGuide={() => openExtensionPage("/welcome.html")}
       />
     </div>
   );

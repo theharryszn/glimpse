@@ -39,7 +39,7 @@ export function SourceContext({ title, url, excerpt }: SourceContextProps) {
       <summary className="flex min-h-8 cursor-pointer list-none items-center gap-2 rounded-[var(--radius-md)] px-2.5 text-[11px] text-ink-muted outline-none transition-colors duration-150 hover:bg-surface-hover hover:text-ink focus-visible:ring-2 focus-visible:ring-accent motion-reduce:transition-none [&::-webkit-details-marker]:hidden">
         <LinkSimple size={13} className="shrink-0" aria-hidden />
         <span className="shrink-0 font-medium">Page context</span>
-        <span className="min-w-0 flex-1 truncate font-mono text-[10px] text-ink-muted/75">
+        <span className="min-w-0 flex-1 truncate font-mono text-[10px] text-ink-muted">
           {source.hostname}
         </span>
         <CaretDown

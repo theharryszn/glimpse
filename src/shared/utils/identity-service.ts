@@ -107,11 +107,12 @@ export async function getOrCreateIdentity(): Promise<IdentityResult> {
         error: error instanceof Error ? error.message : "Unknown error",
         code: "FETCH_FAILED",
       };
-    } finally {
-      // Keep the promise cached for the duration of the session
-      // or clear it if we want to allow retries on failure
     }
   })();
 
-  return initializationPromise;
+  const result = await initializationPromise;
+  if (!result.success) {
+    initializationPromise = null;
+  }
+  return result;
 }

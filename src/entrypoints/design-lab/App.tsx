@@ -61,7 +61,7 @@ export default function App() {
         </nav>
       </aside>
 
-      <main className="design-lab-main">
+      <main className="design-lab-main" aria-label="Glimpse component catalog">
         <header className="design-lab-intro">
           <div>
             <span>Product component catalog</span>
