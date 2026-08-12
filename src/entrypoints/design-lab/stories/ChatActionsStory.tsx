@@ -40,9 +40,8 @@ export function ChatActionsStory() {
       ? [
           { role: "user" as const, content: initialPrompt },
           { role: "assistant" as const, content: visibleResponse },
-          { role: "user" as const, content: prompt },
         ]
-      : [{ role: "user" as const, content: prompt }];
+      : [];
 
     setShowFollowUps(false);
     aiStream.continueStream(prompt, history, designLabContext.metadata);
@@ -51,7 +50,7 @@ export function ChatActionsStory() {
   const runInitialResponse = () => {
     aiStream.continueStream(
       initialPrompt,
-      [{ role: "user", content: initialPrompt }],
+      [],
       designLabContext.metadata,
     );
   };

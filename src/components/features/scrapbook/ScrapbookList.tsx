@@ -1,13 +1,16 @@
-import { useId, useMemo, useState } from "react";
+import { useEffect, useId, useMemo, useState } from "react";
 import { MagnifyingGlass, WarningCircle, X } from "@phosphor-icons/react";
-import { useLiveQuery } from "dexie-react-hooks";
-import { db } from "../../../shared/db/dexie-db";
 import { useScrapbook } from "../../../hooks/use-scrapbook";
 import { ScrapbookRow } from "./ScrapbookRow";
 import { ScrapbookEmptyState } from "./ScrapbookEmptyState";
 import { UserScrapbook } from "../../../shared/types/models";
 import { BloomContext } from "../../../shared/types/messaging";
 import { getScrapbookTitle } from "../../../shared/utils/chat-title-utils";
+import {
+  readScrapbookItems,
+  SCRAPBOOK_STORAGE_KEY,
+  writeScrapbookItems,
+} from "../../../shared/utils/scrapbook-storage";
 import "./ScrapbookList.css";
 
 type ScrapbookFilter = "all" | "active" | "archived";
@@ -20,6 +23,7 @@ const filterLabels: Record<ScrapbookFilter, string> = {
 
 interface Props {
   onOpenChat?: (context: BloomContext) => void;
+  resultsRegionLabel?: string;
   simulatedItems?: UserScrapbook[];
   onSimulatedDelete?: (id: number) => void;
   onSimulatedArchive?: (id: number) => void;
@@ -28,6 +32,7 @@ interface Props {
 
 export function ScrapbookList({
   onOpenChat,
+  resultsRegionLabel = "Scrapbook results",
   simulatedItems,
   onSimulatedDelete,
   onSimulatedArchive,
@@ -44,13 +49,32 @@ export function ScrapbookList({
   const resultsId = useId();
   const resultsStatusId = useId();
 
-  const storedItems = useLiveQuery(
-    () =>
-      db.userScrapbook
-        .orderBy("learnedAt")
-        .reverse()
-        .toArray(),
-  );
+  const [storedItems, setStoredItems] = useState<UserScrapbook[] | undefined>();
+
+  useEffect(() => {
+    if (simulatedItems) return;
+
+    let cancelled = false;
+    const load = async () => {
+      const nextItems = await readScrapbookItems();
+      if (!cancelled) {
+        setStoredItems(nextItems.sort((a, b) => b.learnedAt - a.learnedAt));
+      }
+    };
+    void load();
+
+    const handleStorageChange = (
+      changes: Record<string, Browser.storage.StorageChange>,
+      areaName: string,
+    ) => {
+      if (areaName === "local" && changes[SCRAPBOOK_STORAGE_KEY]) void load();
+    };
+    browser.storage.onChanged.addListener(handleStorageChange);
+    return () => {
+      cancelled = true;
+      browser.storage.onChanged.removeListener(handleStorageChange);
+    };
+  }, [simulatedItems]);
   const items = simulatedItems ?? storedItems;
 
   const counts = useMemo(() => {
@@ -118,7 +142,12 @@ export function ScrapbookList({
 
     setPendingItemId(id);
     try {
-      await db.userScrapbook.update(id, { archivedAt: undefined });
+      const currentItems = await readScrapbookItems();
+      await writeScrapbookItems(
+        currentItems.map((item) =>
+          item.id === id ? { ...item, archivedAt: undefined } : item,
+        ),
+      );
     } catch (error) {
       const message = error instanceof Error ? error.message : "Unknown database error";
       setOperationError(`Couldn’t restore this conversation. ${message}`);
@@ -263,7 +292,11 @@ export function ScrapbookList({
         </div>
       ) : null}
 
-      <div id={resultsId} role="region" aria-label={resultsLabel}>
+      <div
+        id={resultsId}
+        role="region"
+        aria-label={`${resultsRegionLabel}: ${resultsLabel}`}
+      >
         {visibleItems.length === 0 ? (
           <ScrapbookEmptyState
             kind={emptyKind}

@@ -1,16 +1,50 @@
-import { useEffect, useState, useRef, useCallback } from 'react';
-import { db } from '../shared/db/dexie-db';
+import { useEffect, useMemo, useRef, useCallback, useState } from 'react';
+import type { UserScrapbook } from '../shared/types/models';
+import {
+  readScrapbookItems,
+  SCRAPBOOK_STORAGE_KEY,
+} from '../shared/utils/scrapbook-storage';
 
 const DENSITY_LIMIT = 10;
 const UNDERLINE_CLASS = 'glimpse-codex-underline';
 const ACTIVE_CLASS = 'active';
 
 export function useCodexUnderliner(enabled: boolean = true) {
-  const [terms, setTerms] = useState<string[]>([]);
+  const [scrapbookEntries, setScrapbookEntries] = useState<UserScrapbook[]>([]);
+  const terms = useMemo(
+    () =>
+      enabled
+        ? (scrapbookEntries ?? [])
+            .map((entry) => entry.term)
+            .sort((a, b) => b.length - a.length)
+        : [],
+    [enabled, scrapbookEntries],
+  );
   const visibleUnderlines = useRef<Set<HTMLElement>>(new Set());
   const observer = useRef<IntersectionObserver | null>(null);
   const mutationObserver = useRef<MutationObserver | null>(null);
   const isScanning = useRef(false);
+
+  useEffect(() => {
+    if (!enabled) return;
+    let cancelled = false;
+    const load = async () => {
+      const entries = await readScrapbookItems();
+      if (!cancelled) setScrapbookEntries(entries);
+    };
+    void load();
+    const handleStorageChange = (
+      changes: Record<string, Browser.storage.StorageChange>,
+      areaName: string,
+    ) => {
+      if (areaName === 'local' && changes[SCRAPBOOK_STORAGE_KEY]) void load();
+    };
+    browser.storage.onChanged.addListener(handleStorageChange);
+    return () => {
+      cancelled = true;
+      browser.storage.onChanged.removeListener(handleStorageChange);
+    };
+  }, [enabled]);
 
   useEffect(() => {
     // Inject styles into the host page (Shadow DOM styles don't leak out)
@@ -30,26 +64,15 @@ export function useCodexUnderliner(enabled: boolean = true) {
           background-color: #F0F0E8;
           color: #202124;
         }
+        .${UNDERLINE_CLASS}:focus-visible {
+          border-radius: 2px;
+          outline: 2px solid #C8B15C;
+          outline-offset: 2px;
+        }
       `;
       document.head.appendChild(style);
     }
   }, []);
-
-  useEffect(() => {
-    const fetchTerms = async () => {
-      const allEntries = await db.userScrapbook.toArray();
-      const sortedTerms = allEntries.map(e => e.term).sort((a, b) => b.length - a.length);
-      setTerms(sortedTerms);
-    };
-    if (enabled) {
-      fetchTerms();
-    }
-
-    return () => {
-      observer.current?.disconnect();
-      mutationObserver.current?.disconnect();
-    };
-  }, [enabled]);
 
   const updateUnderlineStyles = useCallback(() => {
     if (!enabled) return;
@@ -159,6 +182,8 @@ export function useCodexUnderliner(enabled: boolean = true) {
         span.className = UNDERLINE_CLASS;
         span.textContent = term;
         span.dataset.term = term;
+        span.tabIndex = 0;
+        span.setAttribute('aria-label', `${term}, saved in Glimpse`);
         fragment.appendChild(span);
         
         lastIndex = index + term.length;
@@ -194,6 +219,8 @@ export function useCodexUnderliner(enabled: boolean = true) {
       return;
     }
 
+    observer.current?.disconnect();
+    removeUnderlines();
     if (terms.length === 0) return;
 
     scanDocument();

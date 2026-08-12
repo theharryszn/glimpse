@@ -17,9 +17,9 @@ export function useAiStream() {
   const portRef = useRef<ReturnType<typeof browser.runtime.connect> | null>(
     null,
   );
-  const { saveInteraction } = useScrapbook();
+  const { saveInteraction, updateInteractionTitle } = useScrapbook();
 
-  const saveTitledInteraction = useCallback(
+  const generateAndSaveTitle = useCallback(
     async (
       contextText: string,
       explanation: string,
@@ -38,20 +38,16 @@ export function useAiStream() {
         console.warn("Using fallback conversation title:", titleError);
       }
 
-      return saveInteraction({
-        term: contextText,
-        title,
-        explanation,
-        domainUrl: metadata.url,
-      });
+      return updateInteractionTitle(contextText, title);
     },
-    [saveInteraction],
+    [updateInteractionTitle],
   );
 
   const cleanup = useCallback(() => {
-    if (portRef.current) {
-      portRef.current.disconnect();
+    const activePort = portRef.current;
+    if (activePort) {
       portRef.current = null;
+      activePort.disconnect();
     }
     setIsStreaming(false);
   }, []);
@@ -84,6 +80,7 @@ export function useAiStream() {
       port.postMessage(message);
 
       const listener = (msg: AppMessage) => {
+        if (portRef.current !== port) return;
         if (msg.type === "AI_STREAM_CHUNK") {
           setStreamingText((prev) =>
             msg.payload.token.length > prev.length ? msg.payload.token : prev,
@@ -98,16 +95,32 @@ export function useAiStream() {
             return;
           }
 
-          saveTitledInteraction(
-            contextText,
+          const fallbackTitle = getFallbackChatTitle(
             msg.payload.fullText,
-            metadata,
-          ).then((result) => {
-            if (!result.success) {
-              console.error("Failed to auto-save interaction:", result.error);
+            contextText,
+          );
+          void saveInteraction({
+            term: contextText,
+            title: fallbackTitle,
+            explanation: msg.payload.fullText,
+            domainUrl: metadata.url,
+          }).then((saved) => {
+            cleanup();
+            if (!saved.success) {
+              console.error("Failed to auto-save interaction:", saved.error);
+              return;
             }
+
+            generateAndSaveTitle(
+              contextText,
+              msg.payload.fullText,
+              metadata,
+            ).then((titled) => {
+              if (!titled.success) {
+                console.error("Failed to title interaction:", titled.error);
+              }
+            });
           });
-          cleanup();
         } else if (msg.type === "AI_STREAM_ERROR") {
           setError({ message: msg.payload.error, code: msg.payload.code });
           cleanup();
@@ -116,11 +129,13 @@ export function useAiStream() {
 
       port.onMessage.addListener(listener);
       port.onDisconnect.addListener(() => {
-        setIsStreaming(false);
-        portRef.current = null;
+        if (portRef.current === port) {
+          setIsStreaming(false);
+          portRef.current = null;
+        }
       });
     },
-    [isStreaming, cleanup, saveTitledInteraction],
+    [isStreaming, cleanup, generateAndSaveTitle, saveInteraction],
   );
 
   const continueStream = useCallback(
@@ -149,6 +164,7 @@ export function useAiStream() {
       port.postMessage(message);
 
       const listener = (msg: AppMessage) => {
+        if (portRef.current !== port) return;
         if (msg.type === "AI_STREAM_CHUNK") {
           setStreamingText((prev) =>
             msg.payload.token.length > prev.length ? msg.payload.token : prev,
@@ -163,8 +179,10 @@ export function useAiStream() {
 
       port.onMessage.addListener(listener);
       port.onDisconnect.addListener(() => {
-        setIsStreaming(false);
-        portRef.current = null;
+        if (portRef.current === port) {
+          setIsStreaming(false);
+          portRef.current = null;
+        }
       });
     },
     [isStreaming, cleanup],
@@ -190,6 +208,7 @@ export function useAiStream() {
       port.postMessage(message);
 
       const listener = (msg: AppMessage) => {
+        if (portRef.current !== port) return;
         if (msg.type === "AI_STREAM_CHUNK") {
           setStreamingText((prev) =>
             msg.payload.token.length > prev.length ? msg.payload.token : prev,
@@ -216,24 +235,26 @@ export function useAiStream() {
 
       port.onMessage.addListener(listener);
       port.onDisconnect.addListener(() => {
-        setIsStreaming(false);
-        portRef.current = null;
+        if (portRef.current === port) {
+          setIsStreaming(false);
+          portRef.current = null;
+        }
       });
     },
     [isStreaming, cleanup],
   );
 
   const resetStream = useCallback(() => {
+    cleanup();
     setStreamingText("");
-    setIsStreaming(false);
     setError(null);
-  }, []);
+  }, [cleanup]);
 
   const setCachedStream = useCallback((text: string) => {
+    cleanup();
     setStreamingText(text);
-    setIsStreaming(false);
     setError(null);
-  }, []);
+  }, [cleanup]);
 
   return {
     streamingText,

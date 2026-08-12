@@ -17,9 +17,12 @@ interface FlowPopoverState {
 }
 
 export function FullFlowStory() {
-  const { isHolding, isTriggered, position, dismiss } = useMagicHold();
-  const aiStream = useAiStream();
   const previewRef = React.useRef<HTMLDivElement>(null);
+  const { isHolding, isTriggered, position, dismiss } = useMagicHold(
+    true,
+    previewRef,
+  );
+  const aiStream = useAiStream();
   const [items, setItems] = useStoredState<UserScrapbook[]>(
     "glimpse-design-lab-flow-items",
     initialScrapbookItems,
@@ -92,7 +95,7 @@ export function FullFlowStory() {
             }
           : { x: 560, y: 360 };
       startExplanation(term, nextPosition);
-    } else if (wasTriggered.current) {
+    } else if (!isTriggered && wasTriggered.current) {
       wasTriggered.current = false;
       setPopover((current) => ({ ...current, open: false }));
       aiStream.resetStream();
@@ -200,6 +203,10 @@ export function FullFlowStory() {
         isOpen={panelOpen}
         bloomContext={bloomContext}
         onCloseChat={() => setBloomContext(null)}
+        onClosePanel={() => {
+          setBloomContext(null);
+          setPanelOpen(false);
+        }}
         simulation={{
           scrapbookItems: items,
           onDelete: (id) =>

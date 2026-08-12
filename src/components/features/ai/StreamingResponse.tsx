@@ -19,7 +19,7 @@ export function StreamingResponse({
       aria-atomic="false"
     >
       {hasText && (
-        <p className="m-0 whitespace-pre-wrap text-sm leading-[1.65] text-ink [overflow-wrap:anywhere]">
+        <p className="m-0 whitespace-pre-wrap text-[13px] leading-[1.62] text-ink [overflow-wrap:anywhere]">
           {text}
         </p>
       )}

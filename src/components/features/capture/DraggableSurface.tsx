@@ -138,6 +138,21 @@ export function DraggableSurface({
   }, [isVisible]);
 
   useEffect(() => {
+    if (!isVisible || !surfaceRef.current || typeof ResizeObserver === "undefined") {
+      return;
+    }
+
+    const element = surfaceRef.current;
+    const observer = new ResizeObserver(() => {
+      setCoords((current) =>
+        current ? constrain(current, getSurfaceBounds(element)) : current,
+      );
+    });
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, [isVisible]);
+
+  useEffect(() => {
     if (!isDragging) return;
 
     const move = (event: PointerEvent) => {
@@ -200,7 +215,12 @@ export function DraggableSurface({
     if (event.defaultPrevented || !coords || !surfaceRef.current) return;
 
     const target = event.target as HTMLElement;
-    if (!target.closest("[data-drag-handle]")) return;
+    if (
+      !target.closest("[data-drag-handle]") ||
+      target.closest("[data-no-drag]")
+    ) {
+      return;
+    }
 
     const amount = event.shiftKey ? 10 : 2;
     const deltas: Record<string, { x: number; y: number }> = {

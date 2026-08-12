@@ -25,6 +25,7 @@ export function FabPanelStory() {
         isOpen={open}
         bloomContext={null}
         onCloseChat={() => undefined}
+        onClosePanel={() => setOpen(false)}
         simulation={{
           scrapbookItems: items,
           onDelete: (id) =>

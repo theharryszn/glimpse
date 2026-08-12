@@ -53,20 +53,47 @@ export default defineBackground(() => {
     if (!activeTab?.id) return;
 
     await browser.tabs
-      .sendMessage(activeTab.id, {
-        type: "GLIMPSE_TOGGLE_SCRAPBOOK",
-      } satisfies AppMessage)
+      .sendMessage(
+        activeTab.id,
+        {
+          type: "GLIMPSE_TOGGLE_SCRAPBOOK",
+        } satisfies AppMessage,
+        { frameId: 0 },
+      )
       .catch(() => {
         // Restricted browser pages do not host the Glimpse content script.
       });
   });
 
   async function runAiStream(port: any, prompt: string, options: any = {}) {
+    let session: LanguageModel | null = null;
+    let disconnected = false;
+    const abortController = new AbortController();
+    const handleDisconnect = () => {
+      disconnected = true;
+      abortController.abort();
+      session?.destroy();
+      session = null;
+    };
+    const postMessage = (message: AppMessage) => {
+      if (disconnected) return false;
+      try {
+        port.postMessage(message);
+        return true;
+      } catch {
+        handleDisconnect();
+        return false;
+      }
+    };
+
+    port.onDisconnect.addListener(handleDisconnect);
+
     try {
       if (typeof LanguageModel === "undefined") {
-        port.postMessage({
+        postMessage({
           type: "AI_STREAM_ERROR",
           payload: {
+            success: false,
             error: "Prompt API is not supported in this browser.",
             code: "UNSUPPORTED",
           },
@@ -76,9 +103,10 @@ export default defineBackground(() => {
 
       const availability = await LanguageModel.availability();
       if (availability === "unavailable") {
-        port.postMessage({
+        postMessage({
           type: "AI_STREAM_ERROR",
           payload: {
+            success: false,
             error: "Gemini Nano is not available or enabled on this device.",
             code: "MODEL_UNAVAILABLE",
           },
@@ -86,11 +114,13 @@ export default defineBackground(() => {
         return;
       }
 
-      const session = await LanguageModel.create({
+      session = await LanguageModel.create({
         ...options,
-        languages: ["en", "ja"],
+        signal: abortController.signal,
       });
-      const stream = session.promptStreaming(prompt);
+      const stream = session.promptStreaming(prompt, {
+        signal: abortController.signal,
+      });
 
       let fullText = "";
       const reader = stream.getReader();
@@ -100,18 +130,23 @@ export default defineBackground(() => {
           if (done) break;
           // The Prompt API now yields deltas/chunks, so we accumulate them
           fullText += value;
-          port.postMessage({
+          if (!postMessage({
             type: "AI_STREAM_CHUNK",
             payload: { token: fullText, isComplete: false },
-          });
+          })) break;
         }
       } finally {
         reader.releaseLock();
       }
 
-      port.postMessage({ type: "AI_STREAM_COMPLETE", payload: { fullText } });
-      setTimeout(() => session.destroy(), 0);
+      if (!disconnected) {
+        postMessage({
+          type: "AI_STREAM_COMPLETE",
+          payload: { fullText },
+        });
+      }
     } catch (error: any) {
+      if (disconnected || error?.name === "AbortError") return;
       console.error("Glimpse: AI Bridge Error:", error);
       let code = "STREAM_ERROR";
       if (error.message?.includes("VRAM")) code = "VRAM_LOW";
@@ -121,7 +156,7 @@ export default defineBackground(() => {
       )
         code = "PROMPT_REJECTED";
 
-      port.postMessage({
+      postMessage({
         type: "AI_STREAM_ERROR",
         payload: {
           success: false,
@@ -129,6 +164,9 @@ export default defineBackground(() => {
           code,
         },
       });
+    } finally {
+      port.onDisconnect.removeListener(handleDisconnect);
+      session?.destroy();
     }
   }
 

@@ -68,6 +68,39 @@ describe('useMagicHold', () => {
     expect(result.current.position).toEqual({ x: 50, y: 50 });
   });
 
+  it('should begin holding when a selection appears during the same drag', () => {
+    const mockSelection = {
+      text: '',
+      toString() {
+        return this.text;
+      },
+      rangeCount: 1,
+      getRangeAt: () => ({
+        getBoundingClientRect: () => ({ left: 0, top: 0, right: 100, bottom: 100 }),
+      }),
+    };
+    (window.getSelection as any).mockReturnValue(mockSelection);
+
+    const { result } = renderHook(() => useMagicHold());
+
+    act(() => {
+      window.dispatchEvent(new MouseEvent('mousedown', { button: 0, clientX: 10, clientY: 10 }));
+    });
+    expect(result.current.isHolding).toBe(false);
+
+    act(() => {
+      mockSelection.text = 'newly selected text';
+      window.dispatchEvent(new MouseEvent('mousemove', { clientX: 70, clientY: 50 }));
+    });
+    expect(result.current.isHolding).toBe(true);
+    expect(result.current.position).toEqual({ x: 70, y: 50 });
+
+    act(() => {
+      vi.advanceTimersByTime(1500);
+    });
+    expect(result.current.isTriggered).toBe(true);
+  });
+
   it('should trigger after 1500ms of holding', () => {
     (window.getSelection as any).mockReturnValue({
       toString: () => 'selected text',
