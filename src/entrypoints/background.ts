@@ -42,6 +42,25 @@ export default defineBackground(() => {
     }
   });
 
+  browser.commands.onCommand.addListener(async (command) => {
+    if (command !== "toggle-scrapbook") return;
+
+    const [activeTab] = await browser.tabs.query({
+      active: true,
+      lastFocusedWindow: true,
+    });
+
+    if (!activeTab?.id) return;
+
+    await browser.tabs
+      .sendMessage(activeTab.id, {
+        type: "GLIMPSE_TOGGLE_SCRAPBOOK",
+      } satisfies AppMessage)
+      .catch(() => {
+        // Restricted browser pages do not host the Glimpse content script.
+      });
+  });
+
   async function runAiStream(port: any, prompt: string, options: any = {}) {
     try {
       if (typeof LanguageModel === "undefined") {

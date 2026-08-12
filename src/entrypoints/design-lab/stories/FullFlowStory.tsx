@@ -210,6 +210,12 @@ export function FullFlowStory() {
                 item.id === id ? { ...item, archivedAt: Date.now() } : item,
               ),
             ),
+          onRestore: (id) =>
+            setItems((current) =>
+              current.map((item) =>
+                item.id === id ? { ...item, archivedAt: undefined } : item,
+              ),
+            ),
           chatStoragePrefix: "glimpse-design-lab-flow-live-chat",
         }}
       />

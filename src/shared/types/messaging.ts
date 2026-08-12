@@ -23,6 +23,7 @@ export type AppMessage =
   | { type: 'AI_STREAM_CHUNK'; payload: AIStreamChunk }
   | { type: 'AI_STREAM_COMPLETE'; payload: { fullText: string } }
   | { type: 'AI_STREAM_ERROR'; payload: { success: false; error: string; code: string } }
+  | { type: 'GLIMPSE_TOGGLE_SCRAPBOOK' }
   | { type: 'OPEN_SIDE_PANEL' }
   | { type: 'GET_TAB_ID' };
 

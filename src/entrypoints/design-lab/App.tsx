@@ -1,4 +1,3 @@
-import { Moon, Sun } from "@phosphor-icons/react";
 import { ComponentSection } from "./components/ComponentSection";
 import { ChatActionsStory } from "./stories/ChatActionsStory";
 import { ChatStory } from "./stories/ChatStory";
@@ -19,7 +18,6 @@ import { ScrapbookListStory } from "./stories/ScrapbookListStory";
 import { ScrapbookRowStory } from "./stories/ScrapbookRowStory";
 import { SystemHealthStory } from "./stories/SystemHealthStory";
 import { TooltipStory } from "./stories/TooltipStory";
-import { useStoredState } from "./shared/useStoredState";
 
 const catalog = [
   { id: "foundations", label: "Foundations" },
@@ -36,16 +34,14 @@ const catalog = [
   { id: "learned-tooltip", label: "Learned tooltip" },
   { id: "scrapbook-row", label: "Scrapbook row" },
   { id: "scrapbook-list", label: "Scrapbook list" },
-  { id: "launcher", label: "Launcher" },
+  { id: "launcher", label: "Legacy launcher" },
   { id: "scrapbook-panel", label: "Scrapbook panel" },
   { id: "full-flow", label: "Full product flow" },
 ] as const;
 
 export default function App() {
-  const [dark, setDark] = useStoredState("glimpse-design-lab-dark", false);
-
   return (
-    <div className={`design-lab ${dark ? "dark" : ""}`}>
+    <div className="design-lab dark">
       <aside className="design-lab-sidebar">
         <div className="design-lab-brand">
           <span>G</span>
@@ -63,11 +59,6 @@ export default function App() {
             </a>
           ))}
         </nav>
-
-        <div className="design-lab-sidebar-note">
-          <strong>Production components</strong>
-          <span>Fixtures provide state. AI responses use the live local model.</span>
-        </div>
       </aside>
 
       <main className="design-lab-main">
@@ -77,17 +68,10 @@ export default function App() {
             <h1>Glimpse interface system.</h1>
             <p>
               Product-level components and flows, isolated with their real
-              states and production interactions.
+              states and production interactions. AI examples use the live
+              local model.
             </p>
           </div>
-          <button
-            className="design-lab-theme-toggle"
-            onClick={() => setDark(!dark)}
-            aria-label={dark ? "Use light theme" : "Use dark theme"}
-          >
-            {dark ? <Sun size={15} aria-hidden /> : <Moon size={15} aria-hidden />}
-            {dark ? "Light" : "Dark"}
-          </button>
         </header>
 
         <ComponentSection
@@ -220,8 +204,8 @@ export default function App() {
         <ComponentSection
           id="launcher"
           index="15"
-          title="Launcher"
-          description="The current draggable entry control while shortcut-first access is developed."
+          title="Legacy launcher"
+          description="Kept here for comparison; the production scrapbook now opens with Alt or Option + Shift + G."
         >
           <FabButtonStory />
         </ComponentSection>

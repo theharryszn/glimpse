@@ -154,7 +154,7 @@ export const TacticalPopover: React.FC<Props> = ({
           </div>
         )}
 
-        <main className="min-h-[72px] flex-1 overflow-y-auto overscroll-contain px-3 py-3 [scrollbar-color:var(--surface-hover)_transparent] [scrollbar-width:thin]">
+        <div className="min-h-[72px] flex-1 overflow-y-auto overscroll-contain px-3 py-3 [scrollbar-color:var(--surface-hover)_transparent] [scrollbar-width:thin]">
           {error ? (
             <AiErrorState message={error.message} code={error.code} />
           ) : (
@@ -163,7 +163,7 @@ export const TacticalPopover: React.FC<Props> = ({
               isStreaming={isStreaming}
             />
           )}
-        </main>
+        </div>
 
         {hasActions && (
           <footer className="flex shrink-0 items-center justify-end gap-1.5 border-t border-hairline bg-[var(--surface-overlay)] px-3 py-2.5">

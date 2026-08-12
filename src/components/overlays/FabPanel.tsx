@@ -5,11 +5,13 @@ import { BloomContext } from "../../shared/types/messaging";
 import type { UserScrapbook } from "../../shared/types/models";
 import { NotePencil } from "@phosphor-icons/react";
 import { Button } from "../ui/Button";
+import { KeyboardShortcut } from "../ui/KeyboardShortcut";
 
 interface SimulationOptions {
   scrapbookItems: UserScrapbook[];
   onDelete: (id: number) => void;
   onArchive?: (id: number) => void;
+  onRestore?: (id: number) => void;
   chatStoragePrefix?: string;
 }
 
@@ -77,11 +79,10 @@ export const FabPanel: React.FC<Props> = ({
               </p>
             </div>
             <Button
-              variant="icon"
-              className="!border-transparent !bg-transparent !text-ink-muted hover:!bg-surface-hover hover:!text-ink focus-visible:ring-offset-surface"
+              variant="iconGhost"
               onClick={() => setIsManualChatOpen(true)}
-              title="New Chat"
-              aria-label="New Chat"
+              title="New chat"
+              aria-label="New chat"
             >
               <NotePencil size={16} weight="regular" aria-hidden />
             </Button>
@@ -92,8 +93,18 @@ export const FabPanel: React.FC<Props> = ({
               simulatedItems={simulation?.scrapbookItems}
               onSimulatedDelete={simulation?.onDelete}
               onSimulatedArchive={simulation?.onArchive}
+              onSimulatedRestore={simulation?.onRestore}
             />
           </main>
+          <footer className="flex shrink-0 items-center justify-between gap-3 border-t border-hairline px-4 py-2.5">
+            <span className="text-[11px] text-ink-muted">
+              Stored on this device
+            </span>
+            <KeyboardShortcut
+              keys={["Alt", "Shift", "G"]}
+              label="Alt plus Shift plus G closes the scrapbook"
+            />
+          </footer>
         </div>
       )}
     </div>

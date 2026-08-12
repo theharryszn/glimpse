@@ -22,6 +22,15 @@ export default defineConfig({
         "48": "icon/48.png",
         "128": "icon/128.png"
       }
+    },
+    commands: {
+      "toggle-scrapbook": {
+        suggested_key: {
+          default: "Alt+Shift+G",
+          mac: "Alt+Shift+G",
+        },
+        description: "Open or close the Glimpse Scrapbook",
+      },
     }
   }),
   vite: () => ({

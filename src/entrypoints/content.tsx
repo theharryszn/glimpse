@@ -7,10 +7,10 @@ import { useScrapbook } from '@/hooks/use-scrapbook';
 import { HoldProgressIndicator } from '@/components/features/capture/HoldProgressIndicator';
 import { TacticalPopover } from '@/components/overlays/TacticalPopover';
 import { CodexTooltip } from '@/components/overlays/CodexTooltip';
-import { FabButton } from '@/components/overlays/FabButton';
 import { FabPanel } from '@/components/overlays/FabPanel';
 import { isPdfDocument, getNativePdfSelection, getPdfFallbackText } from '@/shared/utils/pdf-utils';
 import { BloomContext } from '@/shared/types/messaging';
+import type { AppMessage } from '@/shared/types/messaging';
 import { extractPageMetadata } from '@/shared/utils/metadata-utils';
 import '@/assets/main.css';
 
@@ -32,7 +32,7 @@ const ContentApp: React.FC = () => {
       setIsDark(stored[STORAGE_KEY_THEME] === 'dark');
     });
 
-    const listener = (msg: any) => {
+    const listener = (msg: AppMessage | { type: 'GLIMPSE_TOGGLE'; payload: { enabled: boolean } } | { type: 'GLIMPSE_THEME'; payload: { theme: 'light' | 'dark' } }) => {
       if (msg?.type === 'GLIMPSE_TOGGLE') {
         setEnabled(msg.payload.enabled);
         if (!msg.payload.enabled) {
@@ -40,6 +40,8 @@ const ContentApp: React.FC = () => {
         }
       } else if (msg?.type === 'GLIMPSE_THEME') {
         setIsDark(msg.payload.theme === 'dark');
+      } else if (msg?.type === 'GLIMPSE_TOGGLE_SCRAPBOOK') {
+        setIsFabOpen((current) => !current);
       }
     };
     browser.runtime.onMessage.addListener(listener);
@@ -256,7 +258,6 @@ const ContentApp: React.FC = () => {
         domainUrl={tooltipData?.domainUrl || ''}
         position={tooltipData?.position || null}
       />
-      <FabButton isOpen={isFabOpen} onClick={() => setIsFabOpen(!isFabOpen)} />
       <FabPanel isOpen={isFabOpen} bloomContext={fabContext} onCloseChat={() => setFabContext(null)} />
     </div>
   );
