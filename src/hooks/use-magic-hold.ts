@@ -11,12 +11,16 @@ export function useMagicHold() {
     null,
   );
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const activeHoldCleanupRef = useRef<(() => void) | null>(null);
 
   const dismiss = useCallback(() => {
+    activeHoldCleanupRef.current?.();
+    activeHoldCleanupRef.current = null;
     if (timerRef.current) {
       clearTimeout(timerRef.current);
       timerRef.current = null;
     }
+    setIsHolding(false);
     setIsTriggered(false);
     setPosition(null);
   }, []);
@@ -41,6 +45,27 @@ export function useMagicHold() {
         return;
 
       const isPDF = isPdfDocument();
+      let selectionRect: DOMRect | null = null;
+
+      if (!isPDF) {
+        const selection = window.getSelection();
+        const selectedText = selection?.toString().trim() ?? "";
+
+        if (!selectedText || !selection?.rangeCount) {
+          return;
+        }
+
+        selectionRect = selection.getRangeAt(0).getBoundingClientRect();
+
+        if (
+          e.clientX < selectionRect.left ||
+          e.clientX > selectionRect.right ||
+          e.clientY < selectionRect.top ||
+          e.clientY > selectionRect.bottom
+        ) {
+          return;
+        }
+      }
 
       setIsHolding(true);
       setPosition({ x: e.pageX, y: e.pageY });
@@ -53,6 +78,9 @@ export function useMagicHold() {
         setIsHolding(false);
         window.removeEventListener("mousemove", handleMouseMove);
         window.removeEventListener("mouseup", handleMouseUp);
+        if (activeHoldCleanupRef.current === cleanup) {
+          activeHoldCleanupRef.current = null;
+        }
       };
 
       const handleMouseUp = () => {
@@ -79,7 +107,6 @@ export function useMagicHold() {
 
         if (hasSelection) {
           setIsTriggered(true);
-        } else {
         }
 
         cleanup();
@@ -93,23 +120,49 @@ export function useMagicHold() {
       };
 
       const handleMouseMove = (moveEvent: MouseEvent) => {
+        if (
+          selectionRect &&
+          (moveEvent.clientX < selectionRect.left ||
+            moveEvent.clientX > selectionRect.right ||
+            moveEvent.clientY < selectionRect.top ||
+            moveEvent.clientY > selectionRect.bottom)
+        ) {
+          cleanup();
+          return;
+        }
+
         setPosition({ x: moveEvent.pageX, y: moveEvent.pageY });
         startTimer();
       };
 
       window.addEventListener("mousemove", handleMouseMove, { passive: true });
       window.addEventListener("mouseup", handleMouseUp, { once: true });
+      activeHoldCleanupRef.current = cleanup;
 
       startTimer();
     };
 
+    const handleSelectionChange = () => {
+      if (isPdfDocument()) {
+        return;
+      }
+
+      const selectedText = window.getSelection()?.toString().trim() ?? "";
+      if (!selectedText) {
+        dismiss();
+      }
+    };
+
     window.addEventListener("mousedown", handleMouseDown, { capture: true });
+    document.addEventListener("selectionchange", handleSelectionChange);
 
     return () => {
       window.removeEventListener("mousedown", handleMouseDown, {
         capture: true,
       });
-      if (timerRef.current) clearTimeout(timerRef.current);
+      document.removeEventListener("selectionchange", handleSelectionChange);
+      activeHoldCleanupRef.current?.();
+      activeHoldCleanupRef.current = null;
     };
   }, [dismiss]);
 
