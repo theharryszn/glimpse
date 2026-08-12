@@ -1,15 +1,33 @@
 /** @vitest-environment jsdom */
-import 'fake-indexeddb/auto';
 import { renderHook, act } from '@testing-library/react';
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { useCodexUnderliner } from './use-codex-underliner';
-import { db } from '../shared/db/dexie-db';
+import type { UserScrapbook } from '../shared/types/models';
+import { SCRAPBOOK_STORAGE_KEY } from '../shared/utils/scrapbook-storage';
 
 describe('useCodexUnderliner', () => {
-  beforeEach(async () => {
-    if (db.isOpen()) {
-      await db.close();
-    }
+  let storedItems: UserScrapbook[];
+  let storageListener:
+    | ((changes: Record<string, Browser.storage.StorageChange>, areaName: string) => void)
+    | undefined;
+
+  beforeEach(() => {
+    storedItems = [];
+    storageListener = undefined;
+    (globalThis as unknown as { browser: typeof browser }).browser = {
+      storage: {
+        local: {
+          get: vi.fn(async () => ({ [SCRAPBOOK_STORAGE_KEY]: storedItems })),
+          set: vi.fn(),
+        },
+        onChanged: {
+          addListener: vi.fn((listener) => {
+            storageListener = listener;
+          }),
+          removeListener: vi.fn(),
+        },
+      },
+    } as unknown as typeof browser;
     // Mock IntersectionObserver
     global.IntersectionObserver = class {
       constructor() {}
@@ -19,21 +37,14 @@ describe('useCodexUnderliner', () => {
     } as any;
   });
 
-  afterEach(async () => {
-    if (db.isOpen()) {
-      await db.close();
-    }
-    await db.delete();
-  });
-
   it('should underline learned terms in the document', async () => {
-    await db.open();
-    await db.userScrapbook.add({
+    storedItems = [{
+      id: 1,
       term: 'Gemini',
       explanation: 'AI model',
       domainUrl: 'google.com',
       learnedAt: Date.now(),
-    });
+    }];
 
     document.body.innerHTML = '<div>This is a test for Gemini.</div>';
 
@@ -50,13 +61,13 @@ describe('useCodexUnderliner', () => {
   });
 
   it('should not exceed the density limit of 10 per viewport', async () => {
-    await db.open();
-    await db.userScrapbook.add({
+    storedItems = [{
+      id: 1,
       term: 'term',
       explanation: 'test',
       domainUrl: 'example.com',
       learnedAt: Date.now(),
-    });
+    }];
 
     // Create 15 instances of 'term'
     document.body.innerHTML = Array(15).fill('<div>term</div>').join('');
@@ -97,5 +108,40 @@ describe('useCodexUnderliner', () => {
     
     // Adjust expectation based on implementation details (e.g. using a class to hide/show underline)
     expect(activeUnderlines.length).toBeLessThanOrEqual(10);
+  });
+
+  it('should update underlines when the scrapbook changes', async () => {
+    document.body.innerHTML = '<div>A new concept appears here.</div>';
+
+    renderHook(() => useCodexUnderliner());
+
+    await act(async () => {
+      storedItems = [{
+        id: 1,
+        term: 'new concept',
+        explanation: 'A live entry',
+        domainUrl: 'example.com',
+        learnedAt: Date.now(),
+      }];
+      storageListener?.(
+        { [SCRAPBOOK_STORAGE_KEY]: { newValue: storedItems } },
+        'local',
+      );
+      await new Promise(resolve => setTimeout(resolve, 100));
+    });
+
+    expect(document.querySelector('.glimpse-codex-underline')?.textContent)
+      .toBe('new concept');
+
+    await act(async () => {
+      storedItems = [];
+      storageListener?.(
+        { [SCRAPBOOK_STORAGE_KEY]: { newValue: storedItems } },
+        'local',
+      );
+      await new Promise(resolve => setTimeout(resolve, 100));
+    });
+
+    expect(document.querySelector('.glimpse-codex-underline')).toBeNull();
   });
 });

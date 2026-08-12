@@ -1,5 +1,13 @@
-import React, { useLayoutEffect, useRef, useState } from "react";
-
+import * as React from "react";
+import {
+  ChatCircleDots,
+  DotsSixVertical,
+  TextAlignLeft,
+  X,
+} from "@phosphor-icons/react";
+import { AiErrorState } from "@/components/features/ai/AiErrorState";
+import { StreamingResponse } from "@/components/features/ai/StreamingResponse";
+import { DraggableSurface } from "@/components/features/capture/DraggableSurface";
 
 interface Props {
   term?: string;
@@ -13,6 +21,9 @@ interface Props {
   onDismiss?: () => void;
 }
 
+const actionClassName =
+  "inline-flex h-8 shrink-0 items-center justify-center gap-1.5 rounded-md border px-2.5 text-[11px] font-medium transition-[background-color,color,border-color,transform] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-[var(--surface-overlay)] active:translate-y-px motion-reduce:transition-none";
+
 export const TacticalPopover: React.FC<Props> = ({
   term,
   position,
@@ -24,174 +35,161 @@ export const TacticalPopover: React.FC<Props> = ({
   onExplainFurther,
   onDismiss,
 }) => {
-  const popoverRef = useRef<HTMLDivElement>(null);
-  const [coords, setCoords] = useState<{ left: number; top: number } | null>(
-    null,
-  );
+  const dialogRef = React.useRef<HTMLElement>(null);
+  const previousFocusRef = React.useRef<HTMLElement | null>(null);
+  const titleId = React.useId();
+  const selectionId = React.useId();
+  const dragHelpId = React.useId();
 
-  // Drag state
-  const [isDragging, setIsDragging] = useState(false);
-  const dragStartRef = useRef<{
-    x: number;
-    y: number;
-    startLeft: number;
-    startTop: number;
-  } | null>(null);
+  React.useEffect(() => {
+    if (!isVisible) return;
 
-  useLayoutEffect(() => {
-    // Only set initial coords once per appearance to allow dragging later
-    if (isVisible && position && popoverRef.current && !coords) {
-      const popover = popoverRef.current;
-      const { width } = popover.getBoundingClientRect();
+    previousFocusRef.current = document.activeElement as HTMLElement | null;
+    const frame = window.requestAnimationFrame(() => {
+      dialogRef.current?.focus({ preventScroll: true });
+    });
 
-      let left = position.x - width / 2;
-      let top = position.y + 10;
-
-      const padding = 10;
-      if (left < padding) left = padding;
-
-      setCoords({ left, top });
-    } else if (!isVisible) {
-      setCoords(null);
-    }
-  }, [isVisible, position]);
-
-  useEffect(() => {
-    if (!isDragging) return;
-
-    const handleDragMove = (e: MouseEvent) => {
-      if (!dragStartRef.current) return;
-      const dx = e.pageX - dragStartRef.current.x;
-      const dy = e.pageY - dragStartRef.current.y;
-      setCoords({
-        left: dragStartRef.current.startLeft + dx,
-        top: dragStartRef.current.startTop + dy,
-      });
-    };
-
-    const handleDragEnd = () => {
-      setIsDragging(false);
-      dragStartRef.current = null;
-    };
-
-    window.addEventListener("mousemove", handleDragMove);
-    window.addEventListener("mouseup", handleDragEnd);
     return () => {
-      window.removeEventListener("mousemove", handleDragMove);
-      window.removeEventListener("mouseup", handleDragEnd);
+      window.cancelAnimationFrame(frame);
+      previousFocusRef.current?.focus?.({ preventScroll: true });
+      previousFocusRef.current = null;
     };
-  }, [isDragging]);
+  }, [isVisible]);
 
-  const handleDragStart = (e: React.MouseEvent) => {
-    if (!coords) return;
-    setIsDragging(true);
-    dragStartRef.current = {
-      x: e.pageX,
-      y: e.pageY,
-      startLeft: coords.left,
-      startTop: coords.top,
+  React.useEffect(() => {
+    if (!isVisible || !onDismiss) return;
+
+    const dismissOnEscape = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      onDismiss();
     };
-    e.stopPropagation();
-  };
 
-  if (!isVisible || !position) return null;
+    document.addEventListener("keydown", dismissOnEscape);
+    return () => document.removeEventListener("keydown", dismissOnEscape);
+  }, [isVisible, onDismiss]);
+
+  const hasActions =
+    !error &&
+    !isStreaming &&
+    Boolean(streamingText) &&
+    Boolean(onExplainFurther || onAskFollowUp);
 
   return (
-    <div
-      ref={popoverRef}
-      className="tactical-popover"
-      role="status"
-      aria-live="polite"
-      aria-busy={isStreaming}
-      style={{
-        position: "absolute",
-        left: coords?.left ?? position.x,
-        top: coords?.top ?? position.y,
-        opacity: coords ? 1 : 0,
-        pointerEvents: "auto",
-      }}
+    <DraggableSurface
+      anchor={position}
+      isVisible={isVisible}
+      className="tactical-popover !z-[1000000] w-[min(360px,calc(100vw-20px),calc(100%-20px))]"
     >
-      <div className="popover-content">
+      <section
+        ref={dialogRef}
+        role="dialog"
+        tabIndex={-1}
+        aria-labelledby={titleId}
+        aria-describedby={term ? selectionId : undefined}
+        aria-busy={isStreaming}
+        className="flex max-h-[min(520px,calc(100vh-20px))] min-h-0 flex-col overflow-hidden rounded-[var(--radius-lg)] border border-hairline bg-[var(--surface-overlay)] text-ink shadow-[var(--shadow-popover)] backdrop-blur-md focus:outline-none focus-visible:ring-2 focus-visible:ring-accent motion-reduce:scroll-auto"
+      >
         <header
-          style={{
-            cursor: isDragging ? "grabbing" : "grab",
-            userSelect: "none",
-            display: "flex",
-            alignItems: "center",
-            gap: "8px",
-          }}
-          onMouseDown={handleDragStart}
+          data-drag-handle
+          className="flex shrink-0 cursor-grab touch-none select-none items-center gap-2 border-b border-hairline px-2.5 py-2 active:cursor-grabbing"
         >
-          <div
-            style={{
-              width: "3px",
-              height: "18px",
-              backgroundColor: "var(--accent-gold)",
-              borderRadius: "2px",
-            }}
+          <span
+            className="size-1.5 shrink-0 rounded-full bg-accent shadow-[0_0_0_3px_var(--accent-gold-soft)]"
+            aria-hidden
           />
-          <h3
-            style={{
-              margin: 0,
-              fontSize: "16px",
-              fontWeight: 600,
-              fontFamily: "var(--font-heading)",
-              color: "var(--ink-primary)",
-            }}
+          <h2
+            id={titleId}
+            className="m-0 min-w-0 flex-1 font-heading text-xs font-semibold leading-5 text-ink"
           >
-            {term || (isStreaming ? "Synthesizing..." : "Explanation")}
-          </h3>
-        </header>
-        <main style={{ marginTop: "12px", marginBottom: "16px" }}>
-          {error ? (
-            <p
-              className="text-error"
-              style={{ color: "var(--color-error, #ff4d4f)", margin: 0 }}
+            Glimpse
+          </h2>
+          <span
+            className="text-[10px] font-medium text-ink-muted"
+            aria-live="polite"
+          >
+            {isStreaming ? "Explaining" : streamingText ? "Ready" : "Selected"}
+          </span>
+          <button
+            type="button"
+            data-drag-handle
+            aria-label="Move explanation"
+            aria-describedby={dragHelpId}
+            title="Drag to move"
+            className="inline-flex size-8 shrink-0 touch-none cursor-grab items-center justify-center rounded-md text-ink-muted transition-colors duration-150 hover:bg-surface-raised hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent active:cursor-grabbing motion-reduce:transition-none"
+          >
+            <DotsSixVertical size={16} weight="bold" aria-hidden />
+          </button>
+          <span id={dragHelpId} className="sr-only">
+            Drag with the pointer, or use the arrow keys. Hold Shift to move
+            faster.
+          </span>
+          {onDismiss && (
+            <button
+              type="button"
+              data-no-drag
+              onClick={onDismiss}
+              aria-label="Close explanation"
+              title="Close"
+              className="inline-flex size-8 shrink-0 items-center justify-center rounded-md text-ink-muted transition-colors duration-150 hover:bg-surface-raised hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent motion-reduce:transition-none"
             >
-              {error.message}
-            </p>
-          ) : (
-            <div className="streaming-container" style={{ minHeight: "1.5em" }}>
-              {isStreaming && (
-                <span className="sr-only">Glimpse synthesis in progress.</span>
-              )}
+              <X size={15} aria-hidden />
+            </button>
+          )}
+        </header>
+
+        {term && (
+          <div className="shrink-0 px-3 pt-3">
+            <div className="rounded-md border-l-2 border-l-accent bg-surface-raised px-2.5 py-2">
+              <span className="mb-0.5 block text-[9px] font-semibold uppercase tracking-[0.08em] text-ink-muted">
+                Selected passage
+              </span>
               <p
-                className="text-serif"
-                style={{
-                  margin: 0,
-                  lineHeight: 1.5,
-                  color: "var(--ink-primary)",
-                }}
+                id={selectionId}
+                className="m-0 line-clamp-2 text-pretty text-xs leading-[1.45] text-ink [overflow-wrap:anywhere]"
               >
-                {streamingText || (isStreaming ? "Thinking..." : "")}
+                {term}
               </p>
             </div>
+          </div>
+        )}
+
+        <div className="min-h-[72px] flex-1 overflow-y-auto overscroll-contain px-3 py-3 [scrollbar-color:var(--surface-hover)_transparent] [scrollbar-width:thin]">
+          {error ? (
+            <AiErrorState message={error.message} code={error.code} />
+          ) : (
+            <StreamingResponse
+              text={streamingText}
+              isStreaming={isStreaming}
+            />
           )}
-        </main>
-        {!error && !isStreaming && streamingText && (
-          <footer
-            className="popover-footer"
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginTop: "12px",
-            }}
-          >
-            <div style={{ display: "flex", gap: "8px" }}>
-              <button className="btn-secondary" onClick={onExplainFurther}>
-                Explain Further
+        </div>
+
+        {hasActions && (
+          <footer className="flex shrink-0 items-center justify-end gap-1.5 border-t border-hairline bg-[var(--surface-overlay)] px-3 py-2.5">
+            {onExplainFurther && (
+              <button
+                type="button"
+                onClick={onExplainFurther}
+                className={`${actionClassName} border-transparent bg-surface-raised text-ink hover:bg-surface-hover`}
+              >
+                <TextAlignLeft size={14} className="shrink-0" aria-hidden />
+                More detail
               </button>
-              <button className="btn-primary" onClick={onAskFollowUp}>
-                Ask Follow-up
+            )}
+            {onAskFollowUp && (
+              <button
+                type="button"
+                onClick={onAskFollowUp}
+                className={`${actionClassName} border-transparent bg-ink text-surface hover:opacity-90`}
+              >
+                <ChatCircleDots size={14} className="shrink-0" aria-hidden />
+                Ask follow-up
               </button>
-              <button className="btn-ghost" onClick={onDismiss}>
-                Got it
-              </button>
-            </div>
+            )}
           </footer>
         )}
-      </div>
-    </div>
+      </section>
+    </DraggableSurface>
   );
 };

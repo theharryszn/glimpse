@@ -10,6 +10,10 @@ export class GlimpseDatabase extends Dexie {
     this.version(1).stores({
       userScrapbook: '++id, term, domainUrl, learnedAt'
     });
+
+    this.version(2).stores({
+      userScrapbook: '++id, term, domainUrl, learnedAt, archivedAt'
+    });
   }
 }
 

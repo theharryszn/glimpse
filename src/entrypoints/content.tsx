@@ -4,47 +4,48 @@ import { useMagicHold } from '@/hooks/use-magic-hold';
 import { useAiStream } from '@/hooks/use-ai-stream';
 import { useCodexUnderliner } from '@/hooks/use-codex-underliner';
 import { useScrapbook } from '@/hooks/use-scrapbook';
-import { MagicHoldAnimation } from '@/components/overlays/MagicHoldAnimation';
+import { HoldProgressIndicator } from '@/components/features/capture/HoldProgressIndicator';
 import { TacticalPopover } from '@/components/overlays/TacticalPopover';
 import { CodexTooltip } from '@/components/overlays/CodexTooltip';
-import { FabButton } from '@/components/overlays/FabButton';
 import { FabPanel } from '@/components/overlays/FabPanel';
 import { isPdfDocument, getNativePdfSelection, getPdfFallbackText } from '@/shared/utils/pdf-utils';
 import { BloomContext } from '@/shared/types/messaging';
+import type { AppMessage } from '@/shared/types/messaging';
 import { extractPageMetadata } from '@/shared/utils/metadata-utils';
+import '@/assets/fonts';
 import '@/assets/main.css';
 
 const STORAGE_KEY_ENABLED = 'glimpse_enabled';
-const STORAGE_KEY_THEME = 'glimpse_theme';
 
 const ContentApp: React.FC = () => {
   const [enabled, setEnabled] = React.useState(true);
-  const [isDark, setIsDark] = React.useState(false);
-  const { isHolding, isTriggered, position, dismiss } = useMagicHold();
+  const { isHolding, isTriggered, position, dismiss } = useMagicHold(enabled);
   const { streamingText, isStreaming, error, startStream, startElaborateStream, resetStream, setCachedStream } = useAiStream();
   const { getInteractionByTerm } = useScrapbook();
   const [capturedTerm, setCapturedTerm] = React.useState<string>('');
   const [capturedContext, setCapturedContext] = React.useState<string>('');
+  const captureRequestRef = React.useRef(0);
 
   React.useEffect(() => {
-    browser.storage.local.get([STORAGE_KEY_ENABLED, STORAGE_KEY_THEME]).then((stored) => {
+    browser.storage.local.get(STORAGE_KEY_ENABLED).then((stored) => {
       setEnabled(stored[STORAGE_KEY_ENABLED] !== false);
-      setIsDark(stored[STORAGE_KEY_THEME] === 'dark');
     });
 
-    const listener = (msg: any) => {
+    const listener = (msg: AppMessage | { type: 'GLIMPSE_TOGGLE'; payload: { enabled: boolean } }) => {
       if (msg?.type === 'GLIMPSE_TOGGLE') {
         setEnabled(msg.payload.enabled);
         if (!msg.payload.enabled) {
           dismiss();
+          setIsFabOpen(false);
+          setFabContext(null);
         }
-      } else if (msg?.type === 'GLIMPSE_THEME') {
-        setIsDark(msg.payload.theme === 'dark');
+      } else if (msg?.type === 'GLIMPSE_TOGGLE_SCRAPBOOK' && enabled) {
+        setIsFabOpen((current) => !current);
       }
     };
     browser.runtime.onMessage.addListener(listener);
     return () => browser.runtime.onMessage.removeListener(listener);
-  }, [dismiss]);
+  }, [dismiss, enabled]);
   
   // FAB State
   const [isFabOpen, setIsFabOpen] = React.useState(false);
@@ -88,27 +89,31 @@ const ContentApp: React.FC = () => {
   };
 
   React.useEffect(() => {
+    const showTooltipForTarget = (target: HTMLElement, delay = 1000) => {
+      const term = target.dataset.term;
+      if (!term) return;
+
+      latestHoverTerm.current = term;
+      if (hoverTimer.current) clearTimeout(hoverTimer.current);
+
+      hoverTimer.current = setTimeout(async () => {
+        const result = await getInteractionByTerm(term);
+        if (latestHoverTerm.current === term && result.success && result.data) {
+          const rect = target.getBoundingClientRect();
+          setTooltipData({
+            term: result.data.term,
+            learnedAt: result.data.learnedAt,
+            domainUrl: result.data.domainUrl,
+            position: { x: rect.left + rect.width / 2, y: rect.top }
+          });
+        }
+      }, delay);
+    };
+
     const handleMouseOver = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
       if (target.classList.contains('glimpse-codex-underline')) {
-        const term = target.dataset.term;
-        if (!term) return;
-
-        latestHoverTerm.current = term;
-        if (hoverTimer.current) clearTimeout(hoverTimer.current);
-        
-        hoverTimer.current = setTimeout(async () => {
-          const result = await getInteractionByTerm(term);
-          if (latestHoverTerm.current === term && result.success && result.data) {
-            const rect = target.getBoundingClientRect();
-            setTooltipData({
-              term: result.data.term,
-              learnedAt: result.data.learnedAt,
-              domainUrl: result.data.domainUrl,
-              position: { x: rect.left + rect.width / 2, y: rect.top }
-            });
-          }
-        }, 1000); // 1s delay per AC #3
+        showTooltipForTarget(target);
       } else if (!target.closest('.codex-tooltip')) {
         clearTooltip();
       }
@@ -130,12 +135,34 @@ const ContentApp: React.FC = () => {
       }
     };
 
+    const handleFocusIn = (e: FocusEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.classList.contains('glimpse-codex-underline')) {
+        showTooltipForTarget(target, 0);
+      }
+    };
+
+    const handleFocusOut = (e: FocusEvent) => {
+      const target = e.target as HTMLElement;
+      if (target.classList.contains('glimpse-codex-underline')) {
+        clearTooltip();
+      }
+    };
+
+    const handleScroll = () => clearTooltip();
+
     window.addEventListener('mouseover', handleMouseOver);
     window.addEventListener('mouseout', handleMouseOut);
+    window.addEventListener('focusin', handleFocusIn);
+    window.addEventListener('focusout', handleFocusOut);
+    window.addEventListener('scroll', handleScroll, true);
 
     return () => {
       window.removeEventListener('mouseover', handleMouseOver);
       window.removeEventListener('mouseout', handleMouseOut);
+      window.removeEventListener('focusin', handleFocusIn);
+      window.removeEventListener('focusout', handleFocusOut);
+      window.removeEventListener('scroll', handleScroll, true);
       if (hoverTimer.current) clearTimeout(hoverTimer.current);
     };
   }, [getInteractionByTerm]);
@@ -143,18 +170,25 @@ const ContentApp: React.FC = () => {
   const hasTriggeredRef = React.useRef(false);
 
   React.useEffect(() => {
+    const requestId = ++captureRequestRef.current;
+    let cancelled = false;
+    const isCurrentRequest = () =>
+      !cancelled && captureRequestRef.current === requestId;
+
     const fetchAndStart = async () => {
-      if (isTriggered && !hasTriggeredRef.current) {
+      if (enabled && isTriggered && !hasTriggeredRef.current) {
         hasTriggeredRef.current = true;
         let text = '';
         let surroundingText = '';
         if (isPdfDocument()) {
           // Attempt native bridge first
           text = await getNativePdfSelection();
+          if (!isCurrentRequest()) return;
           
           // Patch: Fallback to PDF.js extraction if native selection is empty (e.g. non-standard viewer)
           if (!text) {
             text = await getPdfFallbackText(window.location.href);
+            if (!isCurrentRequest()) return;
           }
         } else {
           const selection = window.getSelection();
@@ -186,11 +220,13 @@ const ContentApp: React.FC = () => {
         }
 
         if (text.length > 0) {
+          if (!isCurrentRequest()) return;
           setCapturedTerm(text);
           setCapturedContext(surroundingText);
 
           // Check for existing term first
           const existing = await getInteractionByTerm(text);
+          if (!isCurrentRequest()) return;
           if (existing.success && existing.data) {
              setCachedStream(existing.data.explanation);
           } else {
@@ -208,8 +244,11 @@ const ContentApp: React.FC = () => {
       }
     };
 
-    fetchAndStart();
-  }, [isTriggered, startStream, resetStream, dismiss]);
+    void fetchAndStart();
+    return () => {
+      cancelled = true;
+    };
+  }, [enabled, isTriggered, startStream, resetStream, dismiss]);
 
 
 
@@ -237,8 +276,8 @@ const ContentApp: React.FC = () => {
   }
 
   return (
-    <div className={isDark ? 'dark' : ''} style={{ pointerEvents: 'none', position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }}>
-      <MagicHoldAnimation position={isHolding ? position : null} />
+    <div className="dark pointer-events-none absolute left-0 top-0 h-full w-full">
+      <HoldProgressIndicator position={isHolding ? position : null} />
       <TacticalPopover 
         term={capturedTerm}
         position={position} 
@@ -256,8 +295,15 @@ const ContentApp: React.FC = () => {
         domainUrl={tooltipData?.domainUrl || ''}
         position={tooltipData?.position || null}
       />
-      <FabButton isOpen={isFabOpen} onClick={() => setIsFabOpen(!isFabOpen)} />
-      <FabPanel isOpen={isFabOpen} bloomContext={fabContext} onCloseChat={() => setFabContext(null)} />
+      <FabPanel
+        isOpen={isFabOpen}
+        bloomContext={fabContext}
+        onCloseChat={() => setFabContext(null)}
+        onClosePanel={() => {
+          setIsFabOpen(false);
+          setFabContext(null);
+        }}
+      />
     </div>
   );
 };
@@ -268,26 +314,6 @@ export default defineContentScript({
   allFrames: true,
 
   async main(ctx) {
-    // Inject Google Fonts into the host page — fonts in the main document
-    // are accessible inside Shadow DOM roots
-    if (!document.getElementById('glimpse-fonts')) {
-      const preconnect1 = document.createElement('link');
-      preconnect1.rel = 'preconnect';
-      preconnect1.href = 'https://fonts.googleapis.com';
-      
-      const preconnect2 = document.createElement('link');
-      preconnect2.rel = 'preconnect';
-      preconnect2.href = 'https://fonts.gstatic.com';
-      preconnect2.crossOrigin = '';
-      
-      const fontLink = document.createElement('link');
-      fontLink.id = 'glimpse-fonts';
-      fontLink.rel = 'stylesheet';
-      fontLink.href = 'https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Changa+One:ital@0;1&family=Inter:wght@400;500;600;700&display=swap';
-      
-      document.head.append(preconnect1, preconnect2, fontLink);
-    }
-
     const ui = await createShadowRootUi(ctx, {
       name: 'glimpse-overlays',
       position: 'inline',

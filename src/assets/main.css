@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 /*
  * Tailwind v4 aliases for Glimpse's semantic design tokens.
  * Existing CSS remains the source of truth while the UI migrates incrementally.
@@ -7,6 +9,8 @@
 @theme inline {
   --color-surface: var(--surface-base);
   --color-surface-raised: var(--surface-raised);
+  --color-surface-inset: var(--surface-inset);
+  --color-surface-hover: var(--surface-hover);
   --color-ink: var(--ink-primary);
   --color-ink-muted: var(--ink-secondary);
   --color-accent: var(--accent-gold);
@@ -15,15 +19,16 @@
   --color-hairline: var(--border-hairline);
   --font-body: var(--font-body);
   --font-heading: var(--font-heading);
+  --font-mono: var(--font-mono);
   --ease-glimpse: cubic-bezier(0.4, 0, 0.2, 1);
 }
-
-/* Google Fonts loaded via <link> tags in HTML pages and injected into host page by content script */
 
 :root {
   /* Colors - Lunar Palette */
   --surface-base: #ffffff;
   --surface-raised: #f4f4f2;
+  --surface-inset: #ecece9;
+  --surface-hover: #e9e9e6;
   --ink-primary: #202124;
   --ink-secondary: #5f6368;
   --accent-gold: #b8b08d; /* Platinum Gold */
@@ -34,12 +39,13 @@
   --surface-overlay: rgba(255, 255, 255, 0.95);
 
   /* Elevation */
-  --shadow-popover: 0 4px 20px rgba(0, 0, 0, 0.08);
+  --shadow-popover:
+    0 10px 30px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.08);
 
   /* Radius */
-  --radius-sm: 2px;
-  --radius-md: 4px;
-  --radius-lg: 8px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
 
   /* Spacing */
   --spacing-1: 4px;
@@ -49,26 +55,35 @@
   --spacing-6: 24px;
 
   /* Typography Families */
-  --font-body: "Outfit", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
   --font-heading: "Inter", system-ui, sans-serif;
   --font-sans: "Inter", system-ui, sans-serif;
-  /* Keep serif alias for backward compat with .text-serif classes */
-  --font-serif: "Outfit", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  /* Backward-compatible alias while legacy class names are removed. */
+  --font-serif: "Inter", system-ui, sans-serif;
+
+  color-scheme: light;
 }
 
 /* Dark Theme - Lunar Orbit */
 :root.dark,
 .dark {
-  --surface-base: #101216;
-  --surface-raised: #1a1c20;
-  --ink-primary: #ffffff;
-  --ink-secondary: #9aa0a6;
-  --accent-gold: #d4af37;
-  --accent-gold-hc: #f0da79;
-  --accent-gold-soft: rgba(212, 175, 55, 0.15);
-  --border-hairline: rgba(255, 255, 255, 0.1);
-  --surface-overlay: rgba(20, 22, 27, 0.95);
-  --shadow-popover: 0 8px 32px rgba(0, 0, 0, 0.4);
+  --surface-base: #17191d;
+  --surface-raised: #222429;
+  --surface-inset: #1c1e22;
+  --surface-hover: #2c2f35;
+  --ink-primary: #f2f3f4;
+  --ink-secondary: #a5a8ad;
+  --accent-gold: #d2b45f;
+  --accent-gold-hc: #f0d87a;
+  --accent-gold-soft: rgba(210, 180, 95, 0.14);
+  --glow-ring: rgba(210, 180, 95, 0.32);
+  --border-hairline: rgba(255, 255, 255, 0.09);
+  --surface-overlay: rgba(29, 31, 36, 0.97);
+  --shadow-popover:
+    0 12px 32px rgba(0, 0, 0, 0.38), 0 1px 1px rgba(255, 255, 255, 0.035);
+
+  color-scheme: dark;
 }
 
 /* Base Styles */
@@ -79,6 +94,7 @@ body {
   font-size: 14px;
   color: var(--ink-primary);
   background-color: var(--surface-base);
+  line-height: 1.5;
 }
 
 h1,
@@ -99,6 +115,9 @@ h6 {
 .text-sans {
   font-family: var(--font-sans);
 }
+.text-mono {
+  font-family: var(--font-mono);
+}
 .text-caption {
   font-size: 12px;
   color: var(--ink-secondary);
@@ -117,6 +136,30 @@ h6 {
   }
 }
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes thinkingDot {
+  0%,
+  60%,
+  100% {
+    opacity: 0.35;
+    transform: translateY(0);
+  }
+  30% {
+    opacity: 1;
+    transform: translateY(-2px);
+  }
+}
+
 .pulse-ring {
   position: absolute;
   border: 2px solid var(--glow-ring);
@@ -125,121 +168,10 @@ h6 {
   animation: pulse-ring 1.5s cubic-bezier(0.215, 0.61, 0.355, 1) infinite;
 }
 
-/* Tactical Popover */
-.tactical-popover {
-  max-width: 340px;
-  min-width: 200px;
-}
-
-.popover-content {
-  background-color: var(--surface-overlay);
-  backdrop-filter: blur(8px);
-  border: 1px solid var(--border-hairline);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-popover);
-  padding: var(--spacing-4);
-  color: var(--ink-primary);
-}
-
-.popover-content header {
-  margin-bottom: var(--spacing-2);
-}
-
-.popover-footer {
-  margin-top: var(--spacing-3);
-  display: flex;
-  justify-content: flex-end;
-  border-top: 1px solid var(--border-hairline);
-  padding-top: var(--spacing-2);
-}
-
-/* Buttons */
-.btn-primary {
-  background-color: var(--accent-gold);
-  color: #ffffff;
-  border: none;
-  font-family: var(--font-sans);
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  padding: 6px 14px;
-  border-radius: var(--radius-md);
-  transition: all 0.2s ease;
-  letter-spacing: 0.02em;
-}
-
-.btn-primary:hover {
-  background-color: #4a4638;
-  box-shadow: 0 2px 8px rgba(99, 95, 75, 0.3);
-}
-
-.btn-secondary {
-  background-color: transparent;
-  color: var(--accent-gold-hc);
-  border: 1px solid var(--accent-gold);
-  font-family: var(--font-sans);
-  font-size: 12px;
-  font-weight: 500;
-  cursor: pointer;
-  padding: 5px;
-  border-radius: var(--radius-md);
-  transition: all 0.2s ease;
-  letter-spacing: 0.02em;
-}
-
-.btn-secondary:hover {
-  background-color: var(--accent-gold-soft);
-  border-color: var(--accent-gold-hc);
-}
-
-.btn-ghost {
-  background: transparent;
-  border: none;
-  color: var(--ink-secondary);
-  font-family: var(--font-sans);
-  font-weight: bold;
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  cursor: pointer;
-  padding: var(--spacing-1) var(--spacing-2);
-  border-radius: var(--radius-sm);
-  transition: all 0.2s ease;
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-1);
-}
-
-.btn-ghost:hover {
-  background-color: var(--surface-raised);
-  color: var(--accent-gold-hc);
-}
-
-.btn-ghost.delete:hover {
-  color: rgb(211, 43, 43);
-}
-
-.btn-icon {
-  background: transparent;
-  border: 1px solid var(--border-hairline);
-  color: var(--ink-secondary);
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 14px;
-  transition: all 0.2s ease;
-  padding: 0;
-  flex-shrink: 0;
-}
-
-.btn-icon:hover {
-  background-color: var(--surface-raised);
-  color: var(--accent-gold-hc);
-  border-color: var(--accent-gold);
+@media (prefers-reduced-motion: reduce) {
+  .pulse-ring {
+    animation: none;
+  }
 }
 
 /* Accessibility Utilities */

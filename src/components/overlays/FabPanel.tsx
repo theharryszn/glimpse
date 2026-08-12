@@ -2,18 +2,46 @@ import React from "react";
 import { ScrapbookList } from "../features/scrapbook/ScrapbookList";
 import { AiChat } from "../features/ai-chat/AiChat";
 import { BloomContext } from "../../shared/types/messaging";
+import type { UserScrapbook } from "../../shared/types/models";
+import { NotePencil, X } from "@phosphor-icons/react";
+import { Button } from "../ui/Button";
+import { KeyboardShortcut } from "../ui/KeyboardShortcut";
+
+interface SimulationOptions {
+  scrapbookItems: UserScrapbook[];
+  onDelete: (id: number) => void;
+  onArchive?: (id: number) => void;
+  onRestore?: (id: number) => void;
+  chatStoragePrefix?: string;
+}
 
 interface Props {
   isOpen: boolean;
   bloomContext: BloomContext | null;
   onCloseChat: () => void;
+  onClosePanel?: () => void;
+  simulation?: SimulationOptions;
+}
+
+function getConversationStorageKey(context: BloomContext | null) {
+  const identity = `${context?.term ?? "new"}:${context?.timestamp ?? 0}`;
+  let hash = 2166136261;
+  for (let index = 0; index < identity.length; index += 1) {
+    hash ^= identity.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+  return `glimpse_chat_${(hash >>> 0).toString(36)}`;
 }
 
 export const FabPanel: React.FC<Props> = ({
   isOpen,
   bloomContext,
   onCloseChat,
+  onClosePanel,
+  simulation,
 }) => {
+  const panelRef = React.useRef<HTMLDivElement>(null);
+  const previouslyFocusedRef = React.useRef<HTMLElement | null>(null);
   const [isManualChatOpen, setIsManualChatOpen] = React.useState(false);
   const [internalContext, setInternalContext] =
     React.useState<BloomContext | null>(null);
@@ -25,6 +53,29 @@ export const FabPanel: React.FC<Props> = ({
       setInternalContext(null);
     }
   }, [bloomContext]);
+
+  React.useEffect(() => {
+    if (!isOpen) return;
+
+    previouslyFocusedRef.current = document.activeElement as HTMLElement | null;
+    const frame = window.requestAnimationFrame(() =>
+      panelRef.current?.focus({ preventScroll: true }),
+    );
+    return () => {
+      window.cancelAnimationFrame(frame);
+      previouslyFocusedRef.current?.focus?.();
+      previouslyFocusedRef.current = null;
+    };
+  }, [isOpen]);
+
+  React.useEffect(() => {
+    if (!isOpen || !onClosePanel) return;
+    const closeOnEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") onClosePanel();
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [isOpen, onClosePanel]);
 
   if (!isOpen) return null;
 
@@ -41,102 +92,75 @@ export const FabPanel: React.FC<Props> = ({
 
   return (
     <div
-      className="fab-panel"
-      style={{
-        position: "fixed",
-        bottom: "96px",
-        right: "24px",
-        width: "400px",
-        height: "600px",
-        maxHeight: "calc(100vh - 120px)",
-        backgroundColor: "var(--surface-base, #ffffff)",
-        borderRadius: "12px",
-        boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
-        overflow: "hidden",
-        display: "flex",
-        flexDirection: "column",
-        zIndex: 2147483646,
-        fontFamily: "var(--font-sans)",
-        border: "1px solid var(--border-hairline, #e5e7eb)",
-        pointerEvents: "auto",
-      }}
+      ref={panelRef}
+      role="region"
+      aria-label="Glimpse scrapbook"
+      tabIndex={-1}
+      className="fab-panel pointer-events-auto fixed bottom-[max(24px,env(safe-area-inset-bottom))] right-[max(24px,env(safe-area-inset-right))] z-[2147483646] flex h-[600px] max-h-[calc(100vh-96px)] w-[min(400px,calc(100vw-48px))] flex-col overflow-hidden rounded-[calc(var(--radius-lg)+2px)] border border-hairline bg-[var(--surface-overlay)] font-[var(--font-sans)] outline-none [box-shadow:var(--shadow-popover)] backdrop-blur-md focus-visible:ring-2 focus-visible:ring-accent"
     >
       {showChat ? (
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            overflow: "hidden",
-          }}
-        >
+        <div className="flex flex-1 flex-col overflow-hidden">
           <AiChat
+            key={`${activeContext?.term ?? "new"}:${activeContext?.timestamp ?? 0}`}
             initialContext={activeContext || undefined}
             onClose={handleCloseChat}
+            persistenceStorage={simulation ? "local" : "extension"}
+            persistenceStorageKey={simulation
+              ? `${simulation.chatStoragePrefix || "glimpse-design-lab-chat"}:${activeContext?.term || "new"}`
+              : getConversationStorageKey(activeContext)}
           />
         </div>
       ) : (
-        <div
-          style={{
-            flex: 1,
-            display: "flex",
-            flexDirection: "column",
-            overflow: "hidden",
-          }}
-        >
-          <header
-            style={{
-              padding: "16px",
-              borderBottom: "1px solid var(--border-hairline, #e5e7eb)",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
+        <div className="flex flex-1 flex-col overflow-hidden">
+          <header className="flex items-center justify-between border-b border-hairline p-4">
             <div>
-              <h1
-                style={{
-                  margin: 0,
-                  fontSize: "18px",
-                  fontWeight: 600,
-                  color: "var(--ink-primary)",
-                }}
-              >
+              <h2 className="m-0 text-base font-semibold text-ink">
                 Glimpse Scrapbook
-              </h1>
-              <p
-                className="text-caption"
-                style={{ margin: "4px 0 0 0", color: "var(--ink-secondary)" }}
-              >
+              </h2>
+              <p className="text-caption mb-0 mt-1 text-ink-muted">
                 Your local research companion.
               </p>
             </div>
-            <button
-              className="btn-icon"
-              onClick={() => setIsManualChatOpen(true)}
-              title="New Chat"
-              aria-label="New Chat"
-            >
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+            <div className="flex items-center gap-1">
+              <Button
+                variant="iconGhost"
+                onClick={() => setIsManualChatOpen(true)}
+                title="New chat"
+                aria-label="New chat"
               >
-                <path d="M12 20h9" />
-                <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-              </svg>
-            </button>
+                <NotePencil size={16} weight="regular" aria-hidden />
+              </Button>
+              {onClosePanel ? (
+                <Button
+                  variant="iconGhost"
+                  onClick={onClosePanel}
+                  title="Close scrapbook"
+                  aria-label="Close scrapbook"
+                >
+                  <X size={16} aria-hidden />
+                </Button>
+              ) : null}
+            </div>
           </header>
-          <main style={{ flex: 1, overflowY: "auto" }}>
+          <div className="flex-1 overflow-y-auto overscroll-contain">
             <ScrapbookList
+              resultsRegionLabel="Scrapbook panel results"
               onOpenChat={(context) => setInternalContext(context)}
+              simulatedItems={simulation?.scrapbookItems}
+              onSimulatedDelete={simulation?.onDelete}
+              onSimulatedArchive={simulation?.onArchive}
+              onSimulatedRestore={simulation?.onRestore}
             />
-          </main>
+          </div>
+          <footer className="flex shrink-0 items-center justify-between gap-3 border-t border-hairline px-4 py-2.5">
+            <span className="text-[11px] text-ink-muted">
+              Stored on this device
+            </span>
+            <KeyboardShortcut
+              keys={["Alt / Option", "Shift", "G"]}
+              label="Alt or Option plus Shift plus G closes the scrapbook"
+            />
+          </footer>
         </div>
       )}
     </div>

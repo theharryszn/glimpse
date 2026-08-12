@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 
 interface Props {
   isOpen: boolean;
@@ -22,6 +22,12 @@ export const FabButton: React.FC<Props> = ({ isOpen, onClick }) => {
         top: window.innerHeight - 44 - padding // Approx height of pill
       });
     }
+  }, [coords]);
+
+  useLayoutEffect(() => {
+    if (!buttonRef.current || !coords) return;
+    buttonRef.current.style.setProperty('--fab-left', `${coords.left}px`);
+    buttonRef.current.style.setProperty('--fab-top', `${coords.top}px`);
   }, [coords]);
 
   useEffect(() => {
@@ -76,33 +82,9 @@ export const FabButton: React.FC<Props> = ({ isOpen, onClick }) => {
   return (
     <button
       ref={buttonRef}
-      className="fab-button"
+      className={`fab-button pointer-events-auto fixed z-[2147483647] flex select-none items-center justify-center rounded-3xl border border-[#4a4a4a] bg-[#333333] px-6 py-3 font-[var(--font-sans)] text-sm font-medium text-white shadow-[0_4px_12px_rgba(0,0,0,0.2)] ${coords ? "left-[var(--fab-left)] top-[var(--fab-top)]" : "bottom-6 right-6"} ${isDragging ? "cursor-grabbing transition-none" : "cursor-pointer transition-colors duration-200"}`}
       onMouseDown={handleMouseDown}
       onClick={handleClick}
-      style={{
-        position: 'fixed',
-        left: coords?.left ?? 'auto',
-        top: coords?.top ?? 'auto',
-        right: coords ? 'auto' : '24px',
-        bottom: coords ? 'auto' : '24px',
-        padding: '12px 24px',
-        borderRadius: '24px',
-        backgroundColor: '#333333',
-        color: '#ffffff',
-        border: '1px solid #4a4a4a',
-        boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-        cursor: isDragging ? 'grabbing' : 'pointer',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: '14px',
-        fontWeight: 500,
-        fontFamily: 'var(--font-sans)',
-        zIndex: 2147483647,
-        pointerEvents: 'auto',
-        userSelect: 'none',
-        transition: isDragging ? 'none' : 'background-color 0.2s',
-      }}
       aria-label={isOpen ? "Close Glimpse Panel" : "Open Glimpse Panel"}
     >
       {isOpen ? 'Close' : 'Glimpse'}

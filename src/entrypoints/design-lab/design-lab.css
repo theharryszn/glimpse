@@ -1,0 +1,666 @@
+:root {
+  --design-lab-shell: #f1f2f0;
+  --design-lab-border: #d9dbd6;
+  --design-lab-muted: #5f635c;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+}
+
+.design-lab {
+  min-height: 100vh;
+  color: var(--ink-primary);
+  background: var(--design-lab-shell);
+  font-family: var(--font-body);
+}
+
+.design-lab.dark {
+  --design-lab-shell: #111315;
+  --design-lab-border: #34373a;
+  --design-lab-muted: #969b9f;
+}
+
+.design-lab-sidebar {
+  position: fixed;
+  z-index: 20;
+  inset: 0 auto 0 0;
+  display: flex;
+  width: 238px;
+  flex-direction: column;
+  padding: 34px 24px 28px;
+  border-right: 1px solid var(--design-lab-border);
+  background: var(--surface-base);
+}
+
+.design-lab-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 48px;
+}
+
+.design-lab-brand > span {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border: 1px solid var(--accent-gold);
+  border-radius: 50%;
+  color: var(--accent-gold-hc);
+  font-weight: 700;
+}
+
+.design-lab-brand > div {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.design-lab-brand strong {
+  font-weight: 650;
+}
+
+.design-lab-brand small {
+  color: var(--design-lab-muted);
+}
+
+.design-lab-sidebar nav {
+  display: flex;
+  min-height: 0;
+  flex-direction: column;
+  gap: 3px;
+  overflow-y: auto;
+}
+
+.design-lab-sidebar nav > span {
+  margin: 0 0 8px 8px;
+  color: var(--design-lab-muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: var(--font-mono);
+}
+
+.design-lab-sidebar nav a {
+  padding: 8px;
+  border-radius: 5px;
+  color: var(--ink-secondary);
+  text-decoration: none;
+  transition: color 150ms ease, background-color 150ms ease;
+}
+
+.design-lab-sidebar nav a:hover,
+.design-lab-sidebar nav a:focus-visible {
+  color: var(--ink-primary);
+  background: var(--surface-raised);
+  outline: none;
+}
+
+.design-lab-sidebar-note {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: auto;
+  padding-top: 18px;
+  border-top: 1px solid var(--design-lab-border);
+}
+
+.design-lab-sidebar-note strong {
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.design-lab-sidebar-note span {
+  color: var(--design-lab-muted);
+  font-size: 9px;
+  line-height: 1.5;
+}
+
+.design-lab-main {
+  width: min(1120px, calc(100% - 238px));
+  min-height: 100vh;
+  margin-left: 238px;
+  padding: 68px 52px 100px;
+}
+
+.design-lab-intro {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 32px;
+  margin-bottom: 70px;
+}
+
+.design-lab-intro > div > span {
+  color: var(--design-lab-muted);
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: var(--font-mono);
+}
+
+.design-lab-intro h1 {
+  margin: 8px 0 10px;
+  color: var(--ink-primary);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+}
+
+.design-lab-intro p {
+  max-width: 560px;
+  margin: 0;
+  color: var(--design-lab-muted);
+  line-height: 1.55;
+}
+
+.design-lab-theme-toggle,
+.design-lab-frame-toolbar button,
+.design-lab-state-controls button,
+.design-lab-flow-toolbar button {
+  border: 1px solid var(--design-lab-border);
+  color: var(--ink-primary);
+  background: var(--surface-base);
+  cursor: pointer;
+}
+
+.design-lab-theme-toggle {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border-radius: 999px;
+  font-size: 10px;
+}
+
+.design-lab-section {
+  scroll-margin-top: 24px;
+  margin-bottom: 68px;
+}
+
+.design-lab-section-header {
+  display: grid;
+  grid-template-columns: 28px max-content minmax(0, 1fr);
+  align-items: baseline;
+  gap: 0 10px;
+  margin-bottom: 13px;
+}
+
+.design-lab-section-header span {
+  color: var(--design-lab-muted);
+  font-size: 9px;
+  font-variant-numeric: tabular-nums;
+  font-family: var(--font-mono);
+}
+
+.design-lab-section-header h2 {
+  margin: 0;
+  color: var(--ink-primary);
+  font-family: Inter, system-ui, sans-serif;
+  font-weight: 600;
+}
+
+.design-lab-section-header p {
+  margin: 0;
+  color: var(--design-lab-muted);
+}
+
+.design-lab-section-frame {
+  position: relative;
+  min-height: 340px;
+  border: 1px solid var(--design-lab-border);
+  border-radius: 12px;
+  background: var(--surface-base);
+  overflow: hidden;
+}
+
+.design-lab-primitive-row,
+.design-lab-surface-grid,
+.design-lab-field-stack {
+  min-height: 340px;
+  padding: 40px;
+}
+
+.design-lab-message-stack,
+.design-lab-composer-frame,
+.design-lab-ai-inline-frame {
+  min-height: 340px;
+  padding: 40px;
+}
+
+.design-lab-message-stack {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 12px;
+}
+
+.design-lab-composer-frame {
+  display: flex;
+  align-items: center;
+}
+
+.design-lab-composer-frame > form {
+  width: min(100%, 560px);
+  margin-inline: auto;
+  border: 1px solid var(--design-lab-border);
+  border-radius: 10px;
+}
+
+.design-lab-ai-inline-frame {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.design-lab-ai-inline-frame > * {
+  width: min(100%, 560px);
+}
+
+.design-lab-primitive-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.design-lab-status-row {
+  gap: 28px;
+}
+
+.design-lab-labeled-control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--ink-secondary);
+  font-size: 11px;
+}
+
+.design-lab-surface-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: center;
+  gap: 12px;
+}
+
+.design-lab-surface-grid > div {
+  min-height: 100px;
+  font-size: 11px;
+}
+
+.design-lab-field-stack {
+  display: flex;
+  width: min(100%, 460px);
+  margin-inline: auto;
+  flex-direction: column;
+  justify-content: center;
+  gap: 10px;
+}
+
+.design-lab-section-frame > .design-lab-page-preview {
+  width: 100%;
+  min-height: 560px;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+.design-lab-page-preview {
+  position: relative;
+  min-height: 560px;
+  background: var(--surface-base);
+  overflow: hidden;
+}
+
+.design-lab-compact-preview {
+  min-height: 340px !important;
+}
+
+.design-lab-article {
+  width: min(640px, calc(100% - 80px));
+  margin: 110px auto;
+  color: var(--ink-primary);
+}
+
+.design-lab-article-compact {
+  margin-top: 96px;
+}
+
+.design-lab-article h1 {
+  margin: 0 0 24px;
+  font-family: var(--font-serif);
+  font-size: 36px;
+  font-weight: 400;
+}
+
+.design-lab-article p {
+  font-family: var(--font-serif);
+  font-size: 17px;
+  line-height: 1.65;
+}
+
+.design-lab-article mark {
+  color: inherit;
+  background: var(--accent-gold-soft);
+}
+
+.design-lab-state-controls,
+.design-lab-frame-toolbar {
+  position: absolute;
+  z-index: 8;
+  top: 14px;
+  right: 14px;
+  display: flex;
+  gap: 5px;
+}
+
+.design-lab-state-controls button,
+.design-lab-frame-toolbar button {
+  padding: 6px 9px;
+  border-radius: 5px;
+  font-size: 10px;
+}
+
+.design-lab-state-controls button[data-active="true"] {
+  color: var(--ink-primary);
+  border-color: var(--accent-gold);
+  background: var(--accent-gold-soft);
+}
+
+.design-lab-hold-copy,
+.design-lab-tooltip-copy {
+  position: absolute;
+  top: 152px;
+  left: 50%;
+  display: flex;
+  width: min(520px, calc(100% - 48px));
+  transform: translateX(-50%);
+}
+
+.design-lab-hold-copy {
+  flex-direction: column;
+  gap: 5px;
+  text-align: center;
+}
+
+.design-lab-hold-copy strong {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.design-lab-hold-copy span,
+.design-lab-tooltip-copy {
+  color: var(--design-lab-muted);
+  font-size: 11px;
+}
+
+.design-lab-tooltip-copy {
+  display: block;
+  text-align: center;
+}
+
+.glimpse-codex-underline.active {
+  color: var(--ink-primary);
+  text-decoration: underline 2px solid var(--accent-gold);
+  text-underline-offset: 3px;
+}
+
+.design-lab-frame-toolbar {
+  left: 16px;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--design-lab-muted);
+  font-size: 10px;
+}
+
+.design-lab-row-frame,
+.design-lab-scrapbook-frame,
+.design-lab-fab-button-frame,
+.design-lab-fab-panel-frame {
+  position: relative;
+  min-height: 340px;
+}
+
+.design-lab-popup-width {
+  width: 300px;
+  max-width: 100%;
+  margin-inline: auto;
+  overflow: hidden;
+  border: 1px solid var(--design-lab-border);
+  border-radius: 8px;
+  background: var(--surface-base);
+}
+
+.design-lab-section-frame > .design-lab-popup-width {
+  margin-block: 92px;
+}
+
+.design-lab-small-component-frame {
+  position: relative;
+  display: grid;
+  min-height: 340px;
+  padding: 72px 24px 28px;
+  place-items: center;
+}
+
+.design-lab-small-component-frame .design-lab-popup-width {
+  margin: 0;
+}
+
+.design-lab-health-frame,
+.design-lab-tutorial-frame {
+  width: min(100%, 680px);
+  margin-inline: auto;
+  padding: 72px 28px 32px;
+}
+
+.design-lab-tutorial-frame {
+  min-height: 500px;
+}
+
+.design-lab-row-frame {
+  padding: 74px 28px 28px;
+}
+
+.design-lab-row-frame .scrapbook-row {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.design-lab-empty-state {
+  display: grid;
+  min-height: 190px;
+  place-items: center;
+  color: var(--design-lab-muted);
+  font-size: 11px;
+}
+
+.design-lab-scrapbook-frame {
+  min-height: 600px;
+  padding-top: 52px;
+}
+
+.design-lab-narrow-frame {
+  width: min(100%, 560px);
+  margin-inline: auto;
+}
+
+.design-lab-chat-frame {
+  height: 660px;
+}
+
+.design-lab-fab-button-frame {
+  min-height: 340px;
+}
+
+.design-lab-fab-button-frame .fab-button {
+  position: absolute;
+  inset: auto 40px 40px auto;
+}
+
+.design-lab-fab-panel-frame {
+  min-height: 700px;
+}
+
+.design-lab-fab-panel-frame .fab-panel,
+.design-lab-flow-preview .fab-panel {
+  position: absolute;
+  right: 24px;
+  bottom: 24px;
+}
+
+.design-lab-section-frame .codex-tooltip {
+  position: absolute;
+}
+
+.design-lab-flow-toolbar {
+  position: absolute;
+  z-index: 9;
+  top: 14px;
+  right: 14px;
+  left: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 8px 10px;
+  border: 1px solid var(--design-lab-border);
+  border-radius: 6px;
+  color: var(--design-lab-muted);
+  background: var(--surface-base);
+  font-size: 10px;
+}
+
+.design-lab-flow-toolbar > div {
+  display: flex;
+  gap: 5px;
+}
+
+.design-lab-flow-toolbar button {
+  padding: 5px 7px;
+  border-radius: 4px;
+  background: var(--surface-raised);
+  font-size: 9px;
+}
+
+.design-lab-flow-preview {
+  overflow: visible;
+}
+
+.design-lab-selectable-article {
+  user-select: text;
+}
+
+.design-lab-page-preview .tactical-popover {
+  z-index: 7;
+}
+
+@media (max-width: 760px) {
+  .design-lab-sidebar {
+    inset: 0 0 auto;
+    width: auto;
+    height: 58px;
+    flex-direction: row;
+    align-items: center;
+    padding: 10px 14px;
+    border-right: 0;
+    border-bottom: 1px solid var(--design-lab-border);
+  }
+
+  .design-lab-brand {
+    flex: 0 0 auto;
+    margin: 0 18px 0 0;
+  }
+
+  .design-lab-sidebar nav {
+    flex: 1;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .design-lab-sidebar nav > span,
+  .design-lab-sidebar-note,
+  .design-lab-brand small {
+    display: none;
+  }
+
+  .design-lab-sidebar nav a {
+    flex: 0 0 auto;
+  }
+
+  .design-lab-main {
+    width: 100%;
+    margin-left: 0;
+    padding: 104px 14px 60px;
+  }
+
+  .design-lab-main > .design-lab-section:not(:target) {
+    display: none;
+  }
+
+  .design-lab-main > .design-lab-section:target {
+    display: block;
+    margin-bottom: 0;
+  }
+
+  .design-lab-main > .design-lab-section:last-child {
+    display: block;
+  }
+
+  .design-lab-main > .design-lab-section:target ~ .design-lab-section:last-child {
+    display: none;
+  }
+
+  .design-lab-intro {
+    margin-bottom: 48px;
+  }
+
+  .design-lab-section-header {
+    grid-template-columns: 24px 1fr;
+  }
+
+  .design-lab-section-header p {
+    grid-column: 2;
+    margin-top: 4px;
+  }
+
+  .design-lab-article {
+    width: calc(100% - 32px);
+  }
+
+  .design-lab-surface-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .design-lab-flow-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .design-lab-sidebar nav a {
+    transition: none;
+  }
+}
