@@ -29,7 +29,7 @@ export const AiChat: React.FC<Props> = ({
   initialContext,
   onClose,
   persistenceStorageKey,
-  autoFocus = true,
+  autoFocus = false,
 }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState("");
@@ -113,16 +113,18 @@ export const AiChat: React.FC<Props> = ({
     <div className="ai-chat-container">
       <header className="chat-header">
         <Button
-          variant="icon"
-          className="!border-transparent !bg-transparent !text-ink-muted hover:!bg-surface-hover hover:!text-ink focus-visible:ring-offset-surface"
+          variant="iconGhost"
           onClick={onClose}
           aria-label="Back to Scrapbook"
         >
           <ArrowLeft size={16} aria-hidden />
         </Button>
         <div className="header-info ml-[var(--spacing-2)] min-w-0 flex-1">
-          <span className="text-caption block truncate">
-            {initialContext?.title ?? "New Chat"}
+          <span
+            className="text-caption block truncate text-[12px] font-medium text-ink-muted"
+            title={initialContext?.title ?? "New chat"}
+          >
+            {initialContext?.title ?? "New chat"}
           </span>
         </div>
       </header>

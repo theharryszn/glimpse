@@ -1,16 +1,20 @@
-import { Sparkle } from "@phosphor-icons/react";
+import { BookOpenText } from "@phosphor-icons/react";
 
 export function ChatEmptyState() {
   return (
-    <div className="m-auto flex max-w-64 flex-col items-center px-5 py-8 text-center">
-      <div className="mb-3 grid size-9 place-items-center rounded-[var(--radius-md)] bg-surface-raised text-ink-muted">
-        <Sparkle size={17} aria-hidden />
+    <div className="m-auto flex w-full max-w-[300px] items-start gap-3 px-6 py-10 text-left">
+      <div className="grid size-9 shrink-0 place-items-center rounded-[var(--radius-md)] bg-accent-soft text-accent-strong">
+        <BookOpenText size={17} weight="duotone" aria-hidden />
       </div>
-      <strong className="text-sm font-medium text-ink">Ask from this page</strong>
-      <p className="mb-0 mt-1 text-xs leading-relaxed text-ink-muted">
-        Your question and the page context stay on this device while the local
-        model responds.
-      </p>
+      <div className="min-w-0 pt-0.5">
+        <strong className="block text-sm font-medium leading-5 text-ink">
+          Ask about what you’re reading
+        </strong>
+        <p className="mb-0 mt-1 text-xs leading-[1.55] text-ink-muted">
+          Glimpse uses this page as context. Your question and the response stay
+          on this device.
+        </p>
+      </div>
     </div>
   );
 }

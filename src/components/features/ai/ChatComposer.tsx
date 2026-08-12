@@ -18,7 +18,7 @@ export function ChatComposer({
   onSubmit,
   disabled = false,
   autoFocus = false,
-  placeholder = "Ask a follow-up...",
+  placeholder = "Ask a follow-up…",
 }: ChatComposerProps) {
   const hasValue = value.trim().length > 0;
   const handleSubmit = (event: FormEvent) => {
@@ -31,9 +31,12 @@ export function ChatComposer({
       className="absolute bottom-4 left-4 right-4 z-10 before:pointer-events-none before:absolute before:-bottom-4 before:-left-4 before:-right-4 before:-top-12 before:-z-10 before:bg-[linear-gradient(to_bottom,transparent_0%,var(--surface-base)_70%)] before:content-['']"
       onSubmit={handleSubmit}
     >
-      <div className="flex items-end gap-2 rounded-[var(--radius-lg)] border border-hairline bg-surface py-1.5 pl-3 pr-1.5 [box-shadow:var(--shadow-popover)] transition-[border-color,box-shadow] duration-150 focus-within:border-accent focus-within:ring-2 focus-within:ring-accent-soft">
+      <div className="flex items-center gap-1.5 rounded-[var(--radius-lg)] border border-hairline bg-surface-raised p-1.5 [box-shadow:var(--shadow-popover)] transition-[border-color,box-shadow,background-color] duration-150 focus-within:border-accent focus-within:bg-surface focus-within:ring-2 focus-within:ring-accent-soft motion-reduce:transition-none">
         <TextField
-          className="h-8 min-h-8 flex-1 !border-0 !bg-transparent px-0 py-0 !shadow-none !outline-none focus:!border-transparent focus:!outline-none focus:!ring-0 focus-visible:!outline-none focus-visible:!ring-0"
+          className="h-8 min-h-8 flex-1 !border-0 !bg-transparent px-1.5 py-0 !shadow-none !outline-none focus:!border-transparent focus:!bg-transparent focus:!outline-none focus:!ring-0 focus-visible:!outline-none focus-visible:!ring-0"
+          aria-label="Message"
+          name="message"
+          autoComplete="off"
           placeholder={placeholder}
           value={value}
           onChange={(event) => onChange(event.target.value)}
@@ -44,6 +47,7 @@ export function ChatComposer({
           <Button
             type="submit"
             variant="icon"
+            size="sm"
             className={`size-8 rounded-full p-0 active:scale-[0.92] motion-reduce:transform-none ${
               hasValue
                 ? "!bg-ink !text-surface"
@@ -57,9 +61,7 @@ export function ChatComposer({
                 size={15}
                 weight="bold"
                 className={`transition-transform duration-[220ms] ease-[cubic-bezier(0.4,0,0.2,1)] motion-reduce:transition-none ${
-                  hasValue
-                    ? "rotate-[360deg] scale-100"
-                    : "rotate-0 scale-90"
+                  hasValue ? "rotate-[360deg] scale-100" : "rotate-0 scale-90"
                 }`}
               />
             </span>

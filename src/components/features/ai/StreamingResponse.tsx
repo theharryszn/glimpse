@@ -9,18 +9,27 @@ export function StreamingResponse({
   text = "",
   isStreaming = false,
 }: StreamingResponseProps) {
+  const hasText = text.length > 0;
+
   return (
     <div
-      className="min-w-0 min-h-[1.5em] break-words [overflow-wrap:anywhere]"
+      className="min-h-[1.5em] min-w-0 break-words [overflow-wrap:anywhere]"
       aria-live="polite"
       aria-busy={isStreaming}
+      aria-atomic="false"
     >
-      {isStreaming && <span className="sr-only">Glimpse is responding.</span>}
-      {text ? (
-        <p className="m-0 text-sm leading-[1.6] text-ink">{text}</p>
-      ) : isStreaming ? (
-        <ThinkingIndicator />
-      ) : null}
+      {hasText && (
+        <p className="m-0 whitespace-pre-wrap text-sm leading-[1.65] text-ink [overflow-wrap:anywhere]">
+          {text}
+        </p>
+      )}
+      {isStreaming && (
+        <div className={hasText ? "mt-2" : undefined}>
+          <ThinkingIndicator
+            label={hasText ? "Writing answer" : "Preparing answer"}
+          />
+        </div>
+      )}
     </div>
   );
 }
